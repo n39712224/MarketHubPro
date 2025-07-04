@@ -29,35 +29,35 @@ export default function Dashboard({ shareLink }: DashboardProps) {
       {/* Header with enhanced design */}
       <div className="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5"></div>
-        <div className="relative max-w-6xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Users className="h-5 w-5 text-white" />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                   MarketHub
                 </h1>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 text-lg ml-13">
+              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-lg ml-10 sm:ml-13">
                 Phase 1: Private sales with email invitations and Facebook connections
               </p>
             </div>
             <Button 
               onClick={() => setIsAddModalOpen(true)} 
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl flex items-center gap-2 sm:gap-3 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 border border-white/20 w-full sm:w-auto justify-center"
             >
-              <UserPlus className="h-5 w-5" />
-              <span className="font-semibold">Create Private Sale</span>
+              <UserPlus className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="font-semibold text-sm sm:text-base">Create Private Sale</span>
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Enhanced Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
           <Card className="relative bg-gradient-to-br from-white to-blue-50/50 dark:from-gray-800 dark:to-blue-950/30 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full -mr-12 -mt-12"></div>
             <CardHeader className="pb-4">

@@ -157,3 +157,70 @@ Respond in JSON format:
     throw new Error("Failed to generate suggestions. Please try again.");
   }
 }
+
+export async function enhanceImage(base64Image: string): Promise<string> {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Analyze this product image and provide suggestions to improve it for marketplace listing. Focus on lighting, composition, background, and overall presentation quality. Respond with JSON: { 'suggestions': ['suggestion1', 'suggestion2'], 'quality_score': number_1_to_10 }"
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/jpeg;base64,${base64Image}`
+              }
+            }
+          ],
+        },
+      ],
+      response_format: { type: "json_object" },
+      max_tokens: 300,
+    });
+
+    return response.choices[0].message.content || "{}";
+  } catch (error) {
+    console.error("AI image enhancement failed:", error);
+    throw new Error("Failed to analyze image quality");
+  }
+}
+
+export async function generateImageDescription(base64Image: string): Promise<string> {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Create a detailed, attractive product description based on this image. Focus on key features, condition, and selling points that would appeal to buyers."
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/jpeg;base64,${base64Image}`
+              }
+            }
+          ],
+        },
+      ],
+      max_tokens: 400,
+    });
+
+    return response.choices[0].message.content || "No description generated";
+  } catch (error) {
+    console.error("AI image description failed:", error);
+    throw new Error("Failed to generate description from image");
+  }
+}

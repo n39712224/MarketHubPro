@@ -7,7 +7,7 @@ import fs from "fs";
 import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertListingSchema, paymentIntentSchema } from "@shared/schema";
-import { generateDescription, improveDescription, suggestTitleAndCategory, type AIDescriptionRequest } from "./ai";
+import { generateDescription, improveDescription, suggestTitleAndCategory, enhanceImage, generateImageDescription, type AIDescriptionRequest } from "./ai";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Initialize Stripe
@@ -279,6 +279,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { description, currentTitle } = req.body;
       const suggestions = await suggestTitleAndCategory(description, currentTitle);
       res.json(suggestions);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/ai/enhance-image", async (req, res) => {
+    try {
+      const { image } = req.body;
+      const enhancement = await enhanceImage(image);
+      res.json({ enhancement: JSON.parse(enhancement) });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/ai/generate-from-image", async (req, res) => {
+    try {
+      const { image } = req.body;
+      const description = await generateImageDescription(image);
+      res.json({ description });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

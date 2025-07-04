@@ -29,6 +29,8 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [showAISuggestions, setShowAISuggestions] = useState(false);
+  const [imageEnhancementSuggestions, setImageEnhancementSuggestions] = useState<string[]>([]);
+  const [isEnhancingImage, setIsEnhancingImage] = useState(false);
 
   const form = useForm<InsertListing>({
     resolver: zodResolver(insertListingSchema),
@@ -133,6 +135,93 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
     }
   };
 
+  const enhanceImageQuality = async (imageFile: File) => {
+    if (!imageFile) return;
+
+    setIsEnhancingImage(true);
+    setImageEnhancementSuggestions([]);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target?.result as string;
+        const base64Data = base64.split(',')[1];
+
+        try {
+          const data = await apiRequest("POST", "/api/ai/enhance-image", {
+            image: base64Data,
+          });
+
+          if (data.enhancement?.suggestions) {
+            setImageEnhancementSuggestions(data.enhancement.suggestions);
+            toast({
+              title: "Image Analysis Complete",
+              description: `Quality score: ${data.enhancement.quality_score}/10`,
+            });
+          }
+        } catch (error) {
+          toast({
+            title: "Image analysis failed",
+            description: "Unable to analyze image quality. Please try again.",
+            variant: "destructive",
+          });
+        }
+      };
+      reader.readAsDataURL(imageFile);
+    } catch (error) {
+      toast({
+        title: "Image analysis failed",
+        description: "Unable to analyze image quality. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsEnhancingImage(false);
+    }
+  };
+
+  const generateDescriptionFromImage = async (imageFile: File) => {
+    if (!imageFile) return;
+
+    setIsGeneratingAI(true);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target?.result as string;
+        const base64Data = base64.split(',')[1];
+
+        try {
+          const data = await apiRequest("POST", "/api/ai/generate-from-image", {
+            image: base64Data,
+          });
+
+          if (data.description) {
+            form.setValue("description", data.description);
+            toast({
+              title: "Description generated from image",
+              description: "AI has analyzed your image and created a description.",
+            });
+          }
+        } catch (error) {
+          toast({
+            title: "Description generation failed",
+            description: "Unable to generate description from image. Please try again.",
+            variant: "destructive",
+          });
+        }
+      };
+      reader.readAsDataURL(imageFile);
+    } catch (error) {
+      toast({
+        title: "Description generation failed",
+        description: "Unable to generate description from image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
   const createListingMutation = useMutation({
     mutationFn: async (data: InsertListing & { imageFiles: File[] }) => {
       const formData = new FormData();
@@ -211,6 +300,66 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
                 onImagesChange={setUploadedImages}
                 maxImages={5}
               />
+              
+              {/* AI Image Enhancement */}
+              {uploadedImages.length > 0 && (
+                <div className="mt-4 space-y-3 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                  <div className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                    <Sparkles className="h-4 w-4" />
+                    AI Image Tools
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => enhanceImageQuality(uploadedImages[0])}
+                      disabled={isEnhancingImage}
+                      className="h-8 px-3 text-xs bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40"
+                    >
+                      {isEnhancingImage ? (
+                        <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                      ) : (
+                        <Wand2 className="h-3 w-3 mr-1" />
+                      )}
+                      Analyze Quality
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => generateDescriptionFromImage(uploadedImages[0])}
+                      disabled={isGeneratingAI}
+                      className="h-8 px-3 text-xs bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                    >
+                      {isGeneratingAI ? (
+                        <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                      ) : (
+                        <Lightbulb className="h-3 w-3 mr-1" />
+                      )}
+                      Generate Description
+                    </Button>
+                  </div>
+                  
+                  {/* Image Enhancement Suggestions */}
+                  {imageEnhancementSuggestions.length > 0 && (
+                    <div className="mt-3 p-3 bg-white dark:bg-gray-900/50 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+                      <div className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-300 mb-2">
+                        <Lightbulb className="h-4 w-4" />
+                        Image Quality Suggestions
+                      </div>
+                      <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                        {imageEnhancementSuggestions.map((suggestion, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-emerald-500 dark:text-emerald-400 mt-1">•</span>
+                            <span>{suggestion}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Basic Information */}
