@@ -18,6 +18,8 @@ export const listingSchema = z.object({
   shippingOffered: z.boolean().default(false),
   localPickup: z.boolean().default(false),
   shareLink: z.string().optional(),
+  invitedEmails: z.array(z.string()).optional(),
+  allowFacebookConnections: z.boolean().default(false),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -185,6 +187,8 @@ export const listings = pgTable("listings", {
   shippingOffered: boolean("shipping_offered").notNull().default(false),
   localPickup: boolean("local_pickup").notNull().default(false),
   shareLink: varchar("share_link", { length: 50 }),
+  invitedEmails: jsonb("invited_emails").$type<string[]>().default([]),
+  allowFacebookConnections: boolean("allow_facebook_connections").notNull().default(false),
   userId: varchar("user_id", { length: 256 }).notNull(),
   // SEO fields
   seoTitle: varchar("seo_title", { length: 160 }),

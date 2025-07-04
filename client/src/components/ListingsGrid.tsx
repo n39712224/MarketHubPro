@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Listing } from "@shared/schema";
+import { Shield } from "lucide-react";
 
 interface ListingsGridProps {
   searchQuery: string;
@@ -210,6 +211,23 @@ export default function ListingsGrid({
                   </Badge>
                 </div>
                 <p className="text-gray-600 text-sm mb-2 line-clamp-2">{listing.description}</p>
+                
+                {/* Private Sale Info */}
+                {listing.visibility === 'private' && (
+                  <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded text-xs">
+                    <div className="flex items-center gap-1 text-blue-700 dark:text-blue-300">
+                      <Shield className="h-3 w-3" />
+                      <span>Private Sale</span>
+                      {listing.invitedEmails && listing.invitedEmails.length > 0 && (
+                        <span>• {listing.invitedEmails.length} people invited</span>
+                      )}
+                      {listing.allowFacebookConnections && (
+                        <span>• Facebook friends included</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-gray-900">${listing.price}</span>
                   {!shareLink && (

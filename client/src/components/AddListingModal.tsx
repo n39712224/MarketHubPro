@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import ImageUpload from "./ImageUpload";
 import { insertListingSchema } from "@shared/schema";
 import type { InsertListing } from "@shared/schema";
-import { Sparkles, Wand2, Lightbulb, Loader2 } from "lucide-react";
+import { Sparkles, Wand2, Lightbulb, Loader2, Shield } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 interface AddListingModalProps {
@@ -381,22 +381,22 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
                       <div className="flex items-center space-x-3">
                         <RadioGroupItem value="public" id="public" />
                         <div>
-                          <Label htmlFor="public" className="text-sm font-medium">Public</Label>
+                          <Label htmlFor="public" className="text-sm font-medium">Public Sale</Label>
                           <p className="text-xs text-gray-500">Anyone can see this listing</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
                         <RadioGroupItem value="shared" id="shared" />
                         <div>
-                          <Label htmlFor="shared" className="text-sm font-medium">Shared</Label>
+                          <Label htmlFor="shared" className="text-sm font-medium">Shared Link</Label>
                           <p className="text-xs text-gray-500">Only people with the link can see</p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
                         <RadioGroupItem value="private" id="private" />
                         <div>
-                          <Label htmlFor="private" className="text-sm font-medium">Private</Label>
-                          <p className="text-xs text-gray-500">Only you can see this listing</p>
+                          <Label htmlFor="private" className="text-sm font-medium">Private Sale</Label>
+                          <p className="text-xs text-gray-500">Only invited people can see this listing</p>
                         </div>
                       </div>
                     </RadioGroup>
@@ -405,6 +405,66 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
                 </FormItem>
               )}
             />
+
+            {/* Private Sale Options */}
+            {form.watch('visibility') === 'private' && (
+              <div className="space-y-4 p-4 border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50/50 dark:bg-blue-900/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200">Private Sale Settings</h3>
+                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="invitedEmails"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm">Invite People by Email</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Enter email addresses, one per line or separated by commas&#10;example@email.com&#10;friend@email.com"
+                          value={field.value?.join('\n') || ''}
+                          onChange={(e) => {
+                            const emails = e.target.value
+                              .split(/[,\n]/)
+                              .map(email => email.trim())
+                              .filter(email => email.length > 0);
+                            field.onChange(emails);
+                          }}
+                          rows={3}
+                          className="resize-none"
+                        />
+                      </FormControl>
+                      <p className="text-xs text-gray-500">These people will be able to see and purchase your item</p>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="allowFacebookConnections"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center space-x-2">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="grid gap-1.5 leading-none">
+                        <FormLabel className="text-sm font-normal">
+                          Allow Facebook friends to see this listing
+                        </FormLabel>
+                        <p className="text-xs text-gray-500">
+                          Your Facebook connections will also be able to view this private listing
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
 
             {/* Shipping Options */}
             <div>
