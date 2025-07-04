@@ -231,7 +231,12 @@ export default function ListingsGrid({
                 )}
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-gray-900">${listing.price}</span>
+                  <div className="flex flex-col">
+                    <span className="text-lg font-bold text-gray-900">${listing.price}</span>
+                    {listing.shippingOffered && (
+                      <span className="text-sm text-gray-500">+ $15.00 shipping</span>
+                    )}
+                  </div>
                   {!shareLink && (
                     <div className="flex space-x-2">
                       <FacebookShare 

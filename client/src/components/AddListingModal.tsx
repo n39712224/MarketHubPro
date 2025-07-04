@@ -652,6 +652,33 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
                     </FormItem>
                   )}
                 />
+                
+                {form.watch("shippingOffered") && (
+                  <div className="ml-6 mt-2">
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                      Shipping Cost
+                    </Label>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-gray-500">$</span>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        className="w-24"
+                        defaultValue="15.00"
+                        onChange={(e) => {
+                          const cost = parseFloat(e.target.value) || 0;
+                          // Store shipping cost for display purposes
+                        }}
+                      />
+                      <span className="text-sm text-gray-500">USD</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Standard shipping rate for this item
+                    </p>
+                  </div>
+                )}
+                
                 <FormField
                   control={form.control}
                   name="localPickup"

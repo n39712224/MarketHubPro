@@ -62,7 +62,7 @@ const CheckoutForm = ({ listing }: { listing: any }) => {
         disabled={!stripe || isProcessing}
         className="w-full"
       >
-        {isProcessing ? "Processing..." : `Pay $${listing.price}`}
+        {isProcessing ? "Processing..." : `Pay $${(listing.price + (listing.shippingOffered ? 15.00 : 0)).toFixed(2)}`}
       </Button>
     </form>
   );
@@ -80,9 +80,13 @@ export default function Checkout() {
 
   useEffect(() => {
     if (listing) {
+      const shippingCost = listing.shippingOffered ? 15.00 : 0;
+      const totalAmount = listing.price + shippingCost;
+      
       apiRequest("POST", "/api/create-payment-intent", { 
-        amount: listing.price,
-        listingId: listing.id 
+        amount: totalAmount,
+        listingId: listing.id,
+        shippingCost: shippingCost
       })
         .then((res) => res.json())
         .then((data) => {
@@ -137,9 +141,24 @@ export default function Checkout() {
                   <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">{listing.description}</p>
                 </div>
                 <Separator />
-                <div className="flex justify-between items-center text-lg font-semibold">
-                  <span>Total</span>
-                  <span className="text-purple-600 dark:text-purple-400">${listing.price}</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span>Item Price</span>
+                    <span>${listing.price}</span>
+                  </div>
+                  {listing.shippingOffered && (
+                    <div className="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+                      <span>Shipping</span>
+                      <span>$15.00</span>
+                    </div>
+                  )}
+                  <Separator />
+                  <div className="flex justify-between items-center text-lg font-semibold">
+                    <span>Total</span>
+                    <span className="text-purple-600 dark:text-purple-400">
+                      ${(listing.price + (listing.shippingOffered ? 15.00 : 0)).toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
