@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { pgTable, text, integer, boolean, timestamp, jsonb, varchar, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, boolean, timestamp, jsonb, varchar, serial, index } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { relations } from "drizzle-orm";
 
@@ -123,11 +123,24 @@ export const conversationSchema = z.object({
 
 export type Conversation = z.infer<typeof conversationSchema>;
 
+// Session storage table for authentication
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
 // Drizzle Database Tables
 export const users = pgTable("users", {
   id: varchar("id", { length: 256 }).primaryKey(),
-  username: varchar("username", { length: 100 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
+  email: varchar("email", { length: 255 }).unique(),
+  firstName: varchar("first_name", { length: 100 }),
+  lastName: varchar("last_name", { length: 100 }),
+  profileImageUrl: varchar("profile_image_url", { length: 500 }),
   phone: varchar("phone", { length: 20 }),
   contactPreferences: jsonb("contact_preferences").$type<{
     showEmail: boolean;
@@ -266,6 +279,7 @@ export const conversationsRelations = relations(conversations, ({ one }) => ({
 // Updated types using Drizzle
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+export type UpsertUser = typeof users.$inferInsert;
 export type DbListing = typeof listings.$inferSelect;
 export type InsertDbListing = typeof listings.$inferInsert;
 export type DbActivity = typeof activities.$inferSelect;

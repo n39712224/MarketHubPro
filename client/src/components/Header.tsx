@@ -1,12 +1,20 @@
 import { Link } from "wouter";
 import { useState } from "react";
+import { LogOut, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
     document.documentElement.classList.toggle('dark');
+  };
+
+  const handleLogout = () => {
+    window.location.href = '/api/logout';
   };
 
   return (
@@ -69,22 +77,45 @@ export default function Header() {
             </button>
             
             {/* User Profile */}
-            <div className="flex items-center space-x-3 bg-white/50 dark:bg-gray-800/50 rounded-full pr-4 pl-1 py-1 border border-white/20 dark:border-gray-700/50">
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400" 
-                  alt="User profile" 
-                  className="w-8 h-8 rounded-full border-2 border-white shadow-md"
-                />
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+            {isAuthenticated && (
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 bg-white/50 dark:bg-gray-800/50 rounded-full pr-4 pl-1 py-1 border border-white/20 dark:border-gray-700/50">
+                  <div className="relative">
+                    {user?.profileImageUrl ? (
+                      <img 
+                        src={user.profileImageUrl} 
+                        alt="User profile" 
+                        className="w-8 h-8 rounded-full border-2 border-white shadow-md object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full border-2 border-white shadow-md bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
+                        <User className="w-4 h-4 text-white" />
+                      </div>
+                    )}
+                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                  </div>
+                  <div className="hidden sm:block">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      {user?.firstName && user?.lastName 
+                        ? `${user.firstName} ${user.lastName}`
+                        : user?.email || 'User'
+                      }
+                    </span>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 -mt-0.5">Online</p>
+                  </div>
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 border-white/20 dark:border-gray-700/50 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline">Logout</span>
+                </Button>
               </div>
-              <div className="hidden sm:block">
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  Alex Johnson
-                </span>
-                <p className="text-xs text-gray-500 dark:text-gray-400 -mt-0.5">Online</p>
-              </div>
-            </div>
+            )}
 
             {/* Mobile Menu Button */}
             <button className="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">

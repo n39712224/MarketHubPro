@@ -1,9 +1,13 @@
-import { Listing, InsertListing, Activity, InsertActivity, UserStats, UserProfile, Message, InsertMessage, Conversation, User, InsertUser, DbListing, InsertDbListing, users, listings, activities, messages, conversations } from "@shared/schema";
+import { Listing, InsertListing, Activity, InsertActivity, UserStats, UserProfile, Message, InsertMessage, Conversation, User, UpsertUser, InsertUser, DbListing, InsertDbListing, users, listings, activities, messages, conversations } from "@shared/schema";
 import { nanoid } from "nanoid";
 import { db } from "./db";
 import { eq, and, or, desc, asc, ilike, sql, count } from "drizzle-orm";
 
 interface IStorage {
+  // User authentication operations (required for Replit Auth)
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
+  
   // Listings
   getListings(): Promise<Listing[]>;
   getListingById(id: string): Promise<Listing | null>;
@@ -41,6 +45,67 @@ interface IStorage {
 }
 
 class MemStorage implements IStorage {
+  // User authentication operations (required for Replit Auth)
+  async getUser(id: string): Promise<User | undefined> {
+    // Mock implementation for in-memory storage
+    const profile = this.userProfiles.find(p => p.id === id);
+    if (!profile) return undefined;
+    
+    return {
+      id: profile.id,
+      email: profile.email,
+      firstName: profile.username.split(' ')[0] || null,
+      lastName: profile.username.split(' ')[1] || null,
+      profileImageUrl: null,
+      phone: profile.phone || null,
+      contactPreferences: profile.contactPreferences,
+      createdAt: profile.createdAt,
+      updatedAt: profile.updatedAt,
+    };
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    // Mock implementation for in-memory storage
+    const existingIndex = this.userProfiles.findIndex(p => p.id === userData.id);
+    const displayName = userData.firstName && userData.lastName 
+      ? `${userData.firstName} ${userData.lastName}`
+      : userData.email || userData.id;
+    
+    const userProfile: UserProfile = {
+      id: userData.id,
+      username: displayName,
+      email: userData.email || '',
+      phone: userData.phone || '',
+      contactPreferences: userData.contactPreferences || {
+        showEmail: true,
+        showPhone: false,
+        showPartialEmail: false,
+        showPartialPhone: false,
+        allowMessages: true,
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    
+    if (existingIndex >= 0) {
+      this.userProfiles[existingIndex] = { ...this.userProfiles[existingIndex], ...userProfile };
+    } else {
+      this.userProfiles.push(userProfile);
+    }
+    
+    return {
+      id: userData.id,
+      email: userData.email || null,
+      firstName: userData.firstName || null,
+      lastName: userData.lastName || null,
+      profileImageUrl: userData.profileImageUrl || null,
+      phone: userData.phone || null,
+      contactPreferences: userProfile.contactPreferences,
+      createdAt: userProfile.createdAt,
+      updatedAt: userProfile.updatedAt,
+    };
+  }
+
   private userProfiles: UserProfile[] = [
     {
       id: "user1",
@@ -440,6 +505,27 @@ class MemStorage implements IStorage {
 }
 
 class DatabaseStorage implements IStorage {
+  // User authentication operations (required for Replit Auth)
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
+  }
+
   private convertDbToListing(dbListing: DbListing): Listing {
     return {
       id: dbListing.id,

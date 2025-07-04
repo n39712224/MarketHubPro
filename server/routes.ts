@@ -8,6 +8,7 @@ import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertListingSchema, paymentIntentSchema } from "@shared/schema";
 import { generateDescription, improveDescription, suggestTitleAndCategory, type AIDescriptionRequest } from "./ai";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Initialize Stripe
 const stripe = process.env.STRIPE_SECRET_KEY ? 
@@ -28,6 +29,9 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
   // Ensure uploads directory exists
   if (!fs.existsSync('uploads')) {
     fs.mkdirSync('uploads');
@@ -39,6 +43,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   });
   app.use('/uploads', express.static('uploads'));
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
 
   // Get all listings
   app.get("/api/listings", async (req, res) => {
