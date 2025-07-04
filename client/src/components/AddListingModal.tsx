@@ -152,11 +152,11 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
             image: base64Data,
           });
 
-          if (data.enhancement?.suggestions) {
-            setImageEnhancementSuggestions(data.enhancement.suggestions);
+          if (data?.suggestions) {
+            setImageEnhancementSuggestions(data.suggestions);
             toast({
               title: "Image Analysis Complete",
-              description: `Quality score: ${data.enhancement.quality_score}/10`,
+              description: `Quality score: ${data.quality_score}/10`,
             });
           }
         } catch (error) {
