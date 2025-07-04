@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import ImageUpload from "./ImageUpload";
 import { insertListingSchema } from "@shared/schema";
 import type { InsertListing } from "@shared/schema";
+import { Sparkles, Wand2, Lightbulb, Loader2 } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 interface AddListingModalProps {
   isOpen: boolean;
@@ -25,6 +27,8 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [showAISuggestions, setShowAISuggestions] = useState(false);
 
   const form = useForm<InsertListing>({
     resolver: zodResolver(insertListingSchema),
@@ -41,6 +45,91 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
       localPickup: false,
     },
   });
+
+  // AI assistance functions
+  const generateDescription = async () => {
+    const title = form.getValues("title");
+    const category = form.getValues("category");
+    const condition = form.getValues("condition");
+    const price = form.getValues("price");
+
+    if (!title || !category || !condition || price === 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in title, category, condition, and price first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    try {
+      const response = await apiRequest("POST", "/api/ai/generate-description", {
+        title,
+        category,
+        condition,
+        price,
+      });
+      const result = await response.json();
+      
+      form.setValue("description", result.description);
+      setShowAISuggestions(true);
+      
+      toast({
+        title: "AI Description Generated!",
+        description: "Your listing description has been created using AI",
+      });
+    } catch (error) {
+      toast({
+        title: "AI Generation Failed",
+        description: "Unable to generate description. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  const improveDescription = async () => {
+    const description = form.getValues("description");
+    if (!description) {
+      toast({
+        title: "No Description",
+        description: "Please enter a description first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    try {
+      const response = await apiRequest("POST", "/api/ai/improve-description", {
+        description,
+        context: {
+          title: form.getValues("title"),
+          category: form.getValues("category"),
+          condition: form.getValues("condition"),
+          price: form.getValues("price"),
+        },
+      });
+      const result = await response.json();
+      
+      form.setValue("description", result.description);
+      
+      toast({
+        title: "Description Improved!",
+        description: "Your description has been enhanced with AI",
+      });
+    } catch (error) {
+      toast({
+        title: "AI Improvement Failed",
+        description: "Unable to improve description. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
 
   const createListingMutation = useMutation({
     mutationFn: async (data: InsertListing & { imageFiles: File[] }) => {
@@ -217,14 +306,60 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Description</FormLabel>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={generateDescription}
+                        disabled={isGeneratingAI}
+                        className="h-8 px-3 text-xs bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40"
+                      >
+                        {isGeneratingAI ? (
+                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                        ) : (
+                          <Sparkles className="h-3 w-3 mr-1" />
+                        )}
+                        Generate with AI
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={improveDescription}
+                        disabled={isGeneratingAI || !field.value}
+                        className="h-8 px-3 text-xs bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                      >
+                        {isGeneratingAI ? (
+                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                        ) : (
+                          <Wand2 className="h-3 w-3 mr-1" />
+                        )}
+                        Improve
+                      </Button>
+                    </div>
+                  </div>
                   <FormControl>
                     <Textarea 
-                      rows={4}
-                      placeholder="Describe your item in detail..."
+                      rows={6}
+                      placeholder="Describe your item in detail... or use AI to generate a description!"
                       {...field}
+                      className="resize-none"
                     />
                   </FormControl>
+                  {showAISuggestions && field.value && (
+                    <div className="mt-2 p-3 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+                      <div className="flex items-center gap-2 text-sm text-purple-700 dark:text-purple-300 mb-1">
+                        <Lightbulb className="h-4 w-4" />
+                        <span className="font-medium">AI-Generated Description</span>
+                      </div>
+                      <p className="text-xs text-purple-600 dark:text-purple-400">
+                        Your description has been optimized for better visibility and sales appeal. You can edit it further or use the "Improve" button to enhance it more.
+                      </p>
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
