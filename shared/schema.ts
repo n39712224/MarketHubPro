@@ -142,6 +142,18 @@ export const users = pgTable("users", {
   lastName: varchar("last_name", { length: 100 }),
   profileImageUrl: varchar("profile_image_url", { length: 500 }),
   phone: varchar("phone", { length: 20 }),
+  // User role preferences - users can be both buyers and sellers
+  isSeller: boolean("is_seller").notNull().default(true),
+  isBuyer: boolean("is_buyer").notNull().default(true),
+  // Seller-specific info
+  sellerBio: text("seller_bio"),
+  sellerRating: integer("seller_rating").default(0), // Average rating * 100 (e.g., 450 = 4.5 stars)
+  totalSales: integer("total_sales").default(0),
+  joinedAsSellerAt: timestamp("joined_as_seller_at"),
+  // Buyer-specific info  
+  buyerRating: integer("buyer_rating").default(0),
+  totalPurchases: integer("total_purchases").default(0),
+  joinedAsBuyerAt: timestamp("joined_as_buyer_at"),
   contactPreferences: jsonb("contact_preferences").$type<{
     showEmail: boolean;
     showPhone: boolean;

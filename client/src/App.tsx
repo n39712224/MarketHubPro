@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import Dashboard from "@/pages/dashboard";
 import Landing from "@/pages/landing";
+import RoleSelection from "@/pages/role-selection";
 import Checkout from "@/pages/checkout";
 import { Route, Switch } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,12 +12,19 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
       refetchOnWindowFocus: false,
+      queryFn: async ({ queryKey }) => {
+        const response = await fetch(queryKey[0] as string);
+        if (!response.ok) {
+          throw new Error(`${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      },
     },
   },
 });
 
 function AppRouter() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) {
     return (
@@ -38,12 +46,19 @@ function AppRouter() {
             <Route path="/" component={Landing} />
           ) : (
             <>
-              <Route path="/" component={Dashboard} />
-              <Route path="/dashboard" component={Dashboard} />
-              <Route path="/checkout/:listingId" component={Checkout} />
-              <Route path="/share/:shareLink">
-                {(params) => <Dashboard shareLink={params.shareLink} />}
-              </Route>
+              {/* Check if user needs role selection */}
+              {user && !user.isSeller && !user.isBuyer ? (
+                <Route path="/" component={RoleSelection} />
+              ) : (
+                <>
+                  <Route path="/" component={Dashboard} />
+                  <Route path="/dashboard" component={Dashboard} />
+                  <Route path="/checkout/:listingId" component={Checkout} />
+                  <Route path="/share/:shareLink">
+                    {(params) => <Dashboard shareLink={params.shareLink} />}
+                  </Route>
+                </>
+              )}
             </>
           )}
           <Route>

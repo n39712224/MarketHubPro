@@ -7,6 +7,7 @@ interface IStorage {
   // User authentication operations (required for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  updateUserRole(id: string, roleUpdates: { isSeller: boolean; isBuyer: boolean; joinedAsSellerAt: Date | null; joinedAsBuyerAt: Date | null }): Promise<User>;
   
   // Listings
   getListings(): Promise<Listing[]>;
@@ -100,10 +101,40 @@ class MemStorage implements IStorage {
       lastName: userData.lastName || null,
       profileImageUrl: userData.profileImageUrl || null,
       phone: userData.phone || null,
+      isSeller: true,
+      isBuyer: true,
+      sellerBio: null,
+      sellerRating: 0,
+      totalSales: 0,
+      joinedAsSellerAt: null,
+      buyerRating: 0,
+      totalPurchases: 0,
+      joinedAsBuyerAt: null,
       contactPreferences: userProfile.contactPreferences,
       createdAt: userProfile.createdAt,
       updatedAt: userProfile.updatedAt,
     };
+  }
+
+  async updateUserRole(id: string, roleUpdates: { isSeller: boolean; isBuyer: boolean; joinedAsSellerAt: Date | null; joinedAsBuyerAt: Date | null }): Promise<User> {
+    const user = await this.getUser(id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    
+    const updatedUser = {
+      ...user,
+      ...roleUpdates,
+      updatedAt: new Date(),
+    };
+    
+    // Update in userProfiles as well
+    const profileIndex = this.userProfiles.findIndex(p => p.id === id);
+    if (profileIndex >= 0) {
+      this.userProfiles[profileIndex].updatedAt = new Date();
+    }
+    
+    return updatedUser;
   }
 
   private userProfiles: UserProfile[] = [
@@ -523,6 +554,23 @@ class DatabaseStorage implements IStorage {
         },
       })
       .returning();
+    return user;
+  }
+
+  async updateUserRole(id: string, roleUpdates: { isSeller: boolean; isBuyer: boolean; joinedAsSellerAt: Date | null; joinedAsBuyerAt: Date | null }): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...roleUpdates,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id))
+      .returning();
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
+    
     return user;
   }
 
