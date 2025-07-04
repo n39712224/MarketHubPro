@@ -52,33 +52,45 @@ export default function Dashboard({ shareLink }: DashboardProps) {
         </section>
       )}
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-8 relative z-10">
-        {!shareLink && (
-          <section className="mb-8">
-            <DashboardStats />
-          </section>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <ListingsGrid
-              searchQuery={searchQuery}
-              selectedCategory={selectedCategory}
-              selectedVisibility={selectedVisibility}
-              onSearchChange={setSearchQuery}
-              onCategoryChange={setSelectedCategory}
-              onVisibilityChange={setSelectedVisibility}
-              shareLink={shareLink}
-            />
-          </div>
-          
-          {!shareLink && (
-            <div>
-              <SidebarWidgets onAddListing={() => setIsAddModalOpen(true)} />
-            </div>
-          )}
+      {/* Enhanced Main Content Area */}
+      <div className="relative bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 min-h-screen">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
         </div>
-      </main>
+        
+        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-8 z-10">
+          {!shareLink && (
+            <section className="mb-8">
+              <DashboardStats />
+            </section>
+          )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              {/* Content Card with Enhanced Styling */}
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden backdrop-blur-sm">
+                <ListingsGrid
+                  searchQuery={searchQuery}
+                  selectedCategory={selectedCategory}
+                  selectedVisibility={selectedVisibility}
+                  onSearchChange={setSearchQuery}
+                  onCategoryChange={setSelectedCategory}
+                  onVisibilityChange={setSelectedVisibility}
+                  shareLink={shareLink}
+                />
+              </div>
+            </div>
+            
+            {!shareLink && (
+              <div className="space-y-6">
+                <SidebarWidgets onAddListing={() => setIsAddModalOpen(true)} />
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
 
       {!shareLink && (
         <footer className="glass-effect border-t border-white/20 dark:border-gray-700/50 mt-16">

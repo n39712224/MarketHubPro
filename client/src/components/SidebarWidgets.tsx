@@ -70,9 +70,9 @@ export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
   return (
     <div className="space-y-6">
       {/* Quick Actions Widget */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+      <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-slate-900 dark:text-white">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <Button 
@@ -100,9 +100,9 @@ export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
       </Card>
 
       {/* Recent Activity Widget */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+      <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-slate-900 dark:text-white">Recent Activity</CardTitle>
         </CardHeader>
         <CardContent>
           {activitiesLoading ? (
@@ -143,9 +143,9 @@ export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
       </Card>
 
       {/* AI Insights Widget */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
             <Sparkles className="w-4 h-4 text-purple-600" />
             Smart Insights
           </CardTitle>
@@ -185,9 +185,9 @@ export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
 
       {/* Performance Summary Widget */}
       {stats && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
               <TrendingUp className="w-4 h-4" />
               Smart Analytics
             </CardTitle>

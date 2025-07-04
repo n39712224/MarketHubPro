@@ -51,8 +51,8 @@ function AppRouter() {
                 <Route path="/" component={RoleSelection} />
               ) : (
                 <>
-                  <Route path="/" component={Dashboard} />
-                  <Route path="/dashboard" component={Dashboard} />
+                  <Route path="/"><Dashboard /></Route>
+                  <Route path="/dashboard"><Dashboard /></Route>
                   <Route path="/checkout/:listingId" component={Checkout} />
                   <Route path="/share/:shareLink">
                     {(params) => <Dashboard shareLink={params.shareLink} />}
