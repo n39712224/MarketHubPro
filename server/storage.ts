@@ -139,9 +139,9 @@ class MemStorage implements IStorage {
 
   private userProfiles: UserProfile[] = [
     {
-      id: "user1",
-      username: "Alex Johnson",
-      email: "alex@markethub.com",
+      id: "user1", 
+      username: "alex.tester",
+      email: "alex.tester@markethub.com",
       phone: "+1-555-0123",
       contactPreferences: {
         showEmail: true,
