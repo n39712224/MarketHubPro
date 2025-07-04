@@ -2,7 +2,7 @@
 
 ## Overview
 
-MarketHub is a full-stack e-commerce application that allows users to create, manage, and sell product listings. The platform supports image uploads, payment processing via Stripe, and provides both public and private listing visibility options. Built with React on the frontend and Express.js on the backend, it uses a modern tech stack optimized for performance and user experience.
+MarketHub Phase 1 is a private sales platform focused exclusively on email invitations and Facebook connections. This testing-focused application allows users to create private sales listings and invite specific people via email, with optional Facebook network integration. The platform features AI-powered description generation, image uploads, and a beautiful modern interface that avoids resembling traditional marketplace designs like eBay.
 
 ## System Architecture
 

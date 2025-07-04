@@ -20,6 +20,11 @@ export const listingSchema = z.object({
   shareLink: z.string().optional(),
   invitedEmails: z.array(z.string()).optional(),
   allowFacebookConnections: z.boolean().default(false),
+  deliveryMethod: z.enum(['pickup', 'shipping', 'both']).default('pickup'),
+  deliveryStatus: z.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).default('pending'),
+  trackingNumber: z.string().optional(),
+  deliveryAddress: z.string().optional(),
+  deliveryNotes: z.string().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -189,6 +194,11 @@ export const listings = pgTable("listings", {
   shareLink: varchar("share_link", { length: 50 }),
   invitedEmails: jsonb("invited_emails").$type<string[]>().default([]),
   allowFacebookConnections: boolean("allow_facebook_connections").notNull().default(false),
+  deliveryMethod: varchar("delivery_method", { length: 20 }).notNull().default("pickup"),
+  deliveryStatus: varchar("delivery_status", { length: 20 }).notNull().default("pending"),
+  trackingNumber: varchar("tracking_number", { length: 100 }),
+  deliveryAddress: text("delivery_address"),
+  deliveryNotes: text("delivery_notes"),
   userId: varchar("user_id", { length: 256 }).notNull(),
   // SEO fields
   seoTitle: varchar("seo_title", { length: 160 }),

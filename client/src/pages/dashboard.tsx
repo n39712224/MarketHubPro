@@ -1,9 +1,10 @@
 import { useState } from "react";
-import Header from "@/components/Header";
-import DashboardStats from "@/components/DashboardStats";
-import ListingsGrid from "@/components/ListingsGrid";
-import SidebarWidgets from "@/components/SidebarWidgets";
+import { useQuery } from "@tanstack/react-query";
+import { UserPlus, Mail, Users, Facebook } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddListingModal from "@/components/AddListingModal";
+import type { Listing } from "@shared/schema";
 
 interface DashboardProps {
   shareLink?: string;
@@ -11,161 +12,238 @@ interface DashboardProps {
 
 export default function Dashboard({ shareLink }: DashboardProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedVisibility, setSelectedVisibility] = useState("");
+
+  const { data: listings = [] } = useQuery<Listing[]>({
+    queryKey: ["/api/listings"],
+  });
+
+  const { data: stats } = useQuery({
+    queryKey: ["/api/stats"],
+  });
+
+  // Filter only private sales
+  const privateSales = listings.filter(listing => listing.visibility === 'private');
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      
-      {/* Hero Section for Dashboard */}
-      {!shareLink && (
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-800"></div>
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_70%)]"></div>
-          </div>
-          
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-              <div>
-                <h1 className="text-4xl font-bold text-white mb-2">
-                  Welcome back, Alex! 👋
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-indigo-950 dark:to-purple-950">
+      {/* Header with enhanced design */}
+      <div className="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5"></div>
+        <div className="relative max-w-6xl mx-auto px-6 py-8">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Users className="h-5 w-5 text-white" />
+                </div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                  MarketHub
                 </h1>
-                <p className="text-purple-100 text-lg">
-                  Manage your marketplace and track your sales performance
-                </p>
               </div>
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="floating-action bg-white text-purple-600 hover:text-purple-700 px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 w-fit mt-4 sm:mt-0 hover:scale-105"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                <span>Add New Listing</span>
-              </button>
+              <p className="text-gray-600 dark:text-gray-400 text-lg ml-13">
+                Phase 1: Private sales with email invitations and Facebook connections
+              </p>
             </div>
+            <Button 
+              onClick={() => setIsAddModalOpen(true)} 
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+            >
+              <UserPlus className="h-5 w-5" />
+              <span className="font-semibold">Create Private Sale</span>
+            </Button>
           </div>
-        </section>
-      )}
-      
-      {/* Enhanced Main Content Area */}
-      <div className="relative bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 min-h-screen">
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#8882_1px,transparent_1px),linear-gradient(to_bottom,#8882_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
         </div>
-        
-        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-8 z-10">
-          {!shareLink && (
-            <section className="mb-8">
-              <DashboardStats />
-            </section>
-          )}
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              {/* Content Card with Enhanced Styling */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 overflow-hidden backdrop-blur-sm">
-                <ListingsGrid
-                  searchQuery={searchQuery}
-                  selectedCategory={selectedCategory}
-                  selectedVisibility={selectedVisibility}
-                  onSearchChange={setSearchQuery}
-                  onCategoryChange={setSelectedCategory}
-                  onVisibilityChange={setSelectedVisibility}
-                  shareLink={shareLink}
-                />
-              </div>
-            </div>
-            
-            {!shareLink && (
-              <div className="space-y-6">
-                <SidebarWidgets onAddListing={() => setIsAddModalOpen(true)} />
-              </div>
-            )}
-          </div>
-        </main>
       </div>
 
-      {!shareLink && (
-        <footer className="glass-effect border-t border-white/20 dark:border-gray-700/50 mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div>
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 2L3 7v11a2 2 0 002 2h10a2 2 0 002-2V7l-7-5z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">MarketHub</span>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1">Personal Marketplace</p>
-                  </div>
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        {/* Enhanced Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <Card className="relative bg-gradient-to-br from-white to-blue-50/50 dark:from-gray-800 dark:to-blue-950/30 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full -mr-12 -mt-12"></div>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm font-semibold text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                  <Users className="h-4 w-4 text-white" />
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Your personal marketplace for buying and selling items easily and securely with modern tools and beautiful design.
+                Active Private Sales
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                {privateSales.length}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Currently available</p>
+            </CardContent>
+          </Card>
+
+          <Card className="relative bg-gradient-to-br from-white to-emerald-50/50 dark:from-gray-800 dark:to-emerald-950/30 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-full -mr-12 -mt-12"></div>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm font-semibold text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
+                  <Mail className="h-4 w-4 text-white" />
+                </div>
+                Email Invitations Sent
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">
+                {privateSales.reduce((total, listing) => 
+                  total + (listing.invitedEmails?.length || 0), 0
+                )}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">People invited</p>
+            </CardContent>
+          </Card>
+
+          <Card className="relative bg-gradient-to-br from-white to-purple-50/50 dark:from-gray-800 dark:to-purple-950/30 border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full -mr-12 -mt-12"></div>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-sm font-semibold text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-sm">$</span>
+                </div>
+                Total Sales Value
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
+                ${privateSales.reduce((total, listing) => total + listing.price, 0).toLocaleString()}
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Across all items</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Enhanced Private Sales List */}
+        <Card className="relative bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-800 dark:to-gray-850 border-0 shadow-2xl overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500"></div>
+          <CardHeader className="bg-gradient-to-r from-gray-50/50 to-transparent dark:from-gray-700/30 dark:to-transparent border-b border-gray-100/50 dark:border-gray-700/50 p-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <Users className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                  Your Private Sales
+                </CardTitle>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Exclusive items available only to invited people via email and Facebook
                 </p>
               </div>
-              
-              <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Platform</h4>
-                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Dashboard</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Listings</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Analytics</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Settings</a></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Support</h4>
-                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Help Center</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Contact Us</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Community</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Status</a></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Legal</h4>
-                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Privacy Policy</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Terms of Service</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Cookie Policy</a></li>
-                  <li><a href="#" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Licenses</a></li>
-                </ul>
-              </div>
             </div>
-            
-            <div className="border-t border-gray-200 dark:border-gray-700 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
-              <p className="text-gray-600 dark:text-gray-300 text-sm">&copy; 2024 MarketHub. All rights reserved.</p>
-              <div className="flex space-x-6 mt-4 sm:mt-0">
-                <a href="#" className="text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M20 10C20 4.477 15.523 0 10 0S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z" clipRule="evenodd" />
-                  </svg>
-                </a>
+          </CardHeader>
+          <CardContent className="p-8">
+            {privateSales.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="relative">
+                  <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <UserPlus className="h-12 w-12 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                    <Mail className="h-4 w-4 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                  Ready to start your first private sale?
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-lg mx-auto leading-relaxed">
+                  Create exclusive sales and invite specific people via email. Enable Facebook connections to reach your network easily.
+                </p>
+                <Button 
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <UserPlus className="h-5 w-5 mr-2" />
+                  <span className="font-semibold">Create Your First Private Sale</span>
+                </Button>
               </div>
-            </div>
-          </div>
-        </footer>
-      )}
+            ) : (
+              <div className="space-y-6">
+                {privateSales.map((listing) => (
+                  <div 
+                    key={listing.id} 
+                    className="relative bg-gradient-to-br from-white to-gray-50/80 dark:from-gray-700/50 dark:to-gray-800/50 border border-gray-200/50 dark:border-gray-600/50 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] group overflow-hidden"
+                  >
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-3">
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {listing.title}
+                          </h3>
+                          <span className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40 text-blue-700 dark:text-blue-300 text-xs px-3 py-1 rounded-full font-semibold shadow-sm">
+                            Private Sale
+                          </span>
+                        </div>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                          {listing.description}
+                        </p>
+                        <div className="flex items-center gap-8 mb-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center shadow-lg">
+                              <span className="text-white font-bold text-sm">$</span>
+                            </div>
+                            <span className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                              ${listing.price.toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                              <Mail className="h-4 w-4 text-white" />
+                            </div>
+                            <span className="font-medium">{listing.invitedEmails?.length || 0} people invited</span>
+                          </div>
+                          {listing.allowFacebookConnections && (
+                            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
+                                <Facebook className="h-4 w-4 text-white" />
+                              </div>
+                              <span className="text-sm font-medium">Facebook enabled</span>
+                            </div>
+                          )}
+                        </div>
+                        {listing.invitedEmails && listing.invitedEmails.length > 0 && (
+                          <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-100 dark:border-blue-800/30">
+                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+                              <Mail className="h-4 w-4 text-blue-500" />
+                              Invited people:
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {listing.invitedEmails.map((email, index) => (
+                                <span 
+                                  key={index}
+                                  className="text-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm font-medium"
+                                >
+                                  {email}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-right ml-6">
+                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-xl p-4 shadow-lg">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">
+                            Category
+                          </div>
+                          <div className="text-sm font-bold text-gray-800 dark:text-gray-200 capitalize">
+                            {listing.category}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
-      <AddListingModal 
-        isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)} 
+      <AddListingModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
       />
     </div>
   );

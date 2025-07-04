@@ -456,6 +456,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe payment routes
+  app.post("/api/create-payment-intent", async (req, res) => {
+    if (!stripe) {
+      return res.status(500).json({ error: "Stripe not configured" });
+    }
+
+    try {
+      const { amount, listingId, description } = req.body;
+      
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: "usd",
+        metadata: {
+          listingId: listingId || "",
+          description: description || "",
+        },
+      });
+
+      res.json({ 
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id
+      });
+    } catch (error: any) {
+      console.error("Payment intent creation error:", error);
+      res.status(500).json({ error: "Failed to create payment intent" });
+    }
+  });
+
+  app.post("/api/confirm-payment", async (req, res) => {
+    if (!stripe) {
+      return res.status(500).json({ error: "Stripe not configured" });
+    }
+
+    try {
+      const { paymentIntentId, listingId } = req.body;
+      
+      // Retrieve payment intent from Stripe
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      if (paymentIntent.status === 'succeeded') {
+        // Update listing status to sold
+        await storage.updateListing(listingId, { 
+          status: 'sold',
+          deliveryStatus: 'processing'
+        });
+        
+        // Create activity record
+        await storage.createActivity({
+          type: 'sale',
+          description: `Payment received for listing`,
+          listingId: listingId,
+          amount: paymentIntent.amount / 100, // Convert back from cents
+        });
+
+        res.json({ success: true, message: "Payment confirmed and listing updated" });
+      } else {
+        res.status(400).json({ error: "Payment not completed" });
+      }
+    } catch (error: any) {
+      console.error("Payment confirmation error:", error);
+      res.status(500).json({ error: "Failed to confirm payment" });
+    }
+  });
+
+  // Delivery tracking routes
+  app.put("/api/listings/:id/delivery", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { deliveryStatus, trackingNumber, deliveryAddress, deliveryNotes } = req.body;
+      
+      const updated = await storage.updateListing(id, {
+        deliveryStatus,
+        trackingNumber,
+        deliveryAddress,
+        deliveryNotes,
+      });
+
+      if (!updated) {
+        return res.status(404).json({ error: "Listing not found" });
+      }
+
+      // Create activity for delivery update
+      await storage.createActivity({
+        type: 'listing_edited',
+        description: `Delivery status updated to ${deliveryStatus}`,
+        listingId: id,
+      });
+
+      res.json(updated);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
