@@ -2,7 +2,7 @@
 
 ## Overview
 
-MarketHub Phase 1 is a private sales platform focused exclusively on email invitations and Facebook connections. This testing-focused application allows users to create private sales listings and invite specific people via email, with optional Facebook network integration. The platform features AI-powered description generation, image uploads, and a beautiful modern interface that avoids resembling traditional marketplace designs like eBay.
+MarketHub is a private-sales-only platform focused exclusively on email invitations and Facebook connections. This platform allows users to create private sales listings and invite specific people via email, with optional Facebook network integration. The platform features shipping cost functionality, image uploads, and a beautiful modern interface that avoids resembling traditional marketplace designs like eBay. The platform is designed for private sales only - no public marketplace features.
 
 ## System Architecture
 
