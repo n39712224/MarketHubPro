@@ -43,7 +43,10 @@ function AppRouter() {
       <div className="relative z-10">
         <Switch>
           {!isAuthenticated ? (
-            <Route path="/" component={Landing} />
+            <>
+              <Route path="/"><Dashboard /></Route>
+              <Route path="/landing" component={Landing} />
+            </>
           ) : (
             <>
               {/* Check if user needs role selection */}

@@ -43,6 +43,8 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
       status: "active",
       shippingOffered: false,
       localPickup: false,
+      invitedEmails: [],
+      allowFacebookConnections: false,
     },
   });
 
