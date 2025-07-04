@@ -152,26 +152,32 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
             image: base64Data,
           });
 
-          if (data?.suggestions) {
-            setImageEnhancementSuggestions(data.suggestions);
+          if (data?.enhancement?.suggestions) {
+            setImageEnhancementSuggestions(data.enhancement.suggestions);
             toast({
               title: "Image Analysis Complete",
-              description: `Quality score: ${data.quality_score}/10`,
+              description: `Quality score: ${data.enhancement.quality_score}/10`,
             });
           }
-        } catch (error) {
+        } catch (error: any) {
+          const errorMessage = error.message || "Unable to analyze image quality. Please try again.";
+          const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("insufficient_quota");
+          
           toast({
-            title: "Image analysis failed",
-            description: "Unable to analyze image quality. Please try again.",
+            title: isQuotaError ? "OpenAI Credits Needed" : "Image analysis failed",
+            description: isQuotaError ? "Please add OpenAI credits to your account to use AI features." : errorMessage,
             variant: "destructive",
           });
         }
       };
       reader.readAsDataURL(imageFile);
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error.message || "Unable to analyze image quality. Please try again.";
+      const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("insufficient_quota");
+      
       toast({
-        title: "Image analysis failed",
-        description: "Unable to analyze image quality. Please try again.",
+        title: isQuotaError ? "OpenAI Credits Needed" : "Image analysis failed",
+        description: isQuotaError ? "Please add OpenAI credits to your account to use AI features." : errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -202,19 +208,25 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
               description: "AI has analyzed your image and created a description.",
             });
           }
-        } catch (error) {
+        } catch (error: any) {
+          const errorMessage = error.message || "Unable to generate description from image. Please try again.";
+          const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("insufficient_quota");
+          
           toast({
-            title: "Description generation failed",
-            description: "Unable to generate description from image. Please try again.",
+            title: isQuotaError ? "OpenAI Credits Needed" : "Description generation failed",
+            description: isQuotaError ? "Please add OpenAI credits to your account to use AI features." : errorMessage,
             variant: "destructive",
           });
         }
       };
       reader.readAsDataURL(imageFile);
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error.message || "Unable to generate description from image. Please try again.";
+      const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("insufficient_quota");
+      
       toast({
-        title: "Description generation failed",
-        description: "Unable to generate description from image. Please try again.",
+        title: isQuotaError ? "OpenAI Credits Needed" : "Description generation failed",
+        description: isQuotaError ? "Please add OpenAI credits to your account to use AI features." : errorMessage,
         variant: "destructive",
       });
     } finally {

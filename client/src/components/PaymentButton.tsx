@@ -17,29 +17,12 @@ export default function PaymentButton({ listingId, amount, title }: PaymentButto
   const handlePayment = async () => {
     setIsProcessing(true);
     try {
-      // Create payment intent
-      const response = await apiRequest("POST", "/api/create-payment-intent", {
-        amount,
-        listingId,
-        description: `Payment for ${title}`,
-      });
-      
-      const { clientSecret } = await response.json();
-      
-      // For now, simulate payment success
-      // In real implementation, this would redirect to Stripe checkout
-      setTimeout(() => {
-        toast({
-          title: "Payment Successful!",
-          description: "Your purchase has been completed.",
-        });
-        setIsProcessing(false);
-      }, 2000);
-      
+      // Redirect to proper Stripe checkout page
+      window.location.href = `/checkout/${listingId}`;
     } catch (error) {
       toast({
         title: "Payment Failed",
-        description: "Please check your payment details and try again.",
+        description: "Please try again.",
         variant: "destructive",
       });
       setIsProcessing(false);

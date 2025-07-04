@@ -290,7 +290,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const enhancement = await enhanceImage(image);
       res.json({ enhancement: JSON.parse(enhancement) });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const isQuotaError = error.code === 'insufficient_quota' || error.message?.includes('quota') || error.isQuotaError;
+      res.status(500).json({ 
+        error: isQuotaError ? "OpenAI credits needed. Please add credits to your OpenAI account." : error.message,
+        errorType: isQuotaError ? 'quota_exceeded' : 'general_error'
+      });
     }
   });
 
@@ -300,7 +304,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const description = await generateImageDescription(image);
       res.json({ description });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const isQuotaError = error.code === 'insufficient_quota' || error.message?.includes('quota') || error.isQuotaError;
+      res.status(500).json({ 
+        error: isQuotaError ? "OpenAI credits needed. Please add credits to your OpenAI account." : error.message,
+        errorType: isQuotaError ? 'quota_exceeded' : 'general_error'
+      });
     }
   });
 
@@ -455,26 +463,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stripe payment intent
-  app.post("/api/create-payment-intent", async (req, res) => {
-    if (!stripe) {
-      return res.status(500).json({ error: "Stripe not configured" });
-    }
-    
-    try {
-      const { amount, listingId } = paymentIntentSchema.parse(req.body);
-      
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convert to cents
-        currency: "usd",
-        metadata: { listingId },
-      });
-      
-      res.json({ clientSecret: paymentIntent.client_secret });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  });
+
 
   // Stripe payment routes
   app.post("/api/create-payment-intent", async (req, res) => {

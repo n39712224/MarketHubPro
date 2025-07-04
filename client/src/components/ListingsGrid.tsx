@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Listing } from "@shared/schema";
 import { Shield } from "lucide-react";
+import FacebookShare from "./FacebookShare";
+import PaymentButton from "./PaymentButton";
 
 interface ListingsGridProps {
   searchQuery: string;
@@ -232,6 +234,12 @@ export default function ListingsGrid({
                   <span className="text-lg font-bold text-gray-900">${listing.price}</span>
                   {!shareLink && (
                     <div className="flex space-x-2">
+                      <FacebookShare 
+                        listingId={listing.id}
+                        title={listing.title}
+                        description={listing.description}
+                        imageUrl={listing.images[0]}
+                      />
                       <Button
                         variant="ghost"
                         size="sm"
@@ -268,9 +276,19 @@ export default function ListingsGrid({
                     </div>
                   )}
                   {shareLink && listing.status === 'active' && (
-                    <Button asChild size="sm">
-                      <a href={`/checkout/${listing.id}`}>Buy Now</a>
-                    </Button>
+                    <div className="flex space-x-2">
+                      <FacebookShare 
+                        listingId={listing.id}
+                        title={listing.title}
+                        description={listing.description}
+                        imageUrl={listing.images[0]}
+                      />
+                      <PaymentButton 
+                        listingId={listing.id}
+                        amount={listing.price}
+                        title={listing.title}
+                      />
+                    </div>
                   )}
                 </div>
                 <div className="mt-3 text-xs text-gray-500 flex items-center justify-between">

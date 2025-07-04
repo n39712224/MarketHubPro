@@ -186,8 +186,11 @@ export async function enhanceImage(base64Image: string): Promise<string> {
     });
 
     return response.choices[0].message.content || "{}";
-  } catch (error) {
+  } catch (error: any) {
     console.error("AI image enhancement failed:", error);
+    if (error.code === 'insufficient_quota' || error.message?.includes('quota')) {
+      throw { ...error, isQuotaError: true };
+    }
     throw new Error("Failed to analyze image quality");
   }
 }
@@ -219,8 +222,11 @@ export async function generateImageDescription(base64Image: string): Promise<str
     });
 
     return response.choices[0].message.content || "No description generated";
-  } catch (error) {
+  } catch (error: any) {
     console.error("AI image description failed:", error);
+    if (error.code === 'insufficient_quota' || error.message?.includes('quota')) {
+      throw { ...error, isQuotaError: true };
+    }
     throw new Error("Failed to generate description from image");
   }
 }
