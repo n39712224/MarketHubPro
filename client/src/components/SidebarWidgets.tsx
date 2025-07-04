@@ -2,7 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import type { Activity } from "@shared/schema";
+import { Sparkles, TrendingUp, Lightbulb, Target } from "lucide-react";
 
 interface SidebarWidgetsProps {
   onAddListing: () => void;
@@ -140,11 +142,55 @@ export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
         </CardContent>
       </Card>
 
+      {/* AI Insights Widget */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-purple-600" />
+            Smart Insights
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="p-3 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className="w-4 h-4 text-green-600" />
+              <span className="text-sm font-medium">Price Optimization</span>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Increase your laptop price by 15% - similar items selling for $120 more
+            </p>
+          </div>
+          
+          <div className="p-3 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Target className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-medium">Best Time to List</span>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Post new items Sunday 7-9pm for 40% more views
+            </p>
+          </div>
+          
+          <div className="p-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <Lightbulb className="w-4 h-4 text-amber-600" />
+              <span className="text-sm font-medium">Smart Suggestion</span>
+            </div>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              Add "vintage" keyword to boost electronics sales by 25%
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Performance Summary Widget */}
       {stats && (
         <Card>
           <CardHeader>
-            <CardTitle>This Month</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Smart Analytics
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">

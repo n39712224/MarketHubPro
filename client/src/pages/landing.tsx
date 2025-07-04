@@ -23,11 +23,11 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-          Your Personal Marketplace
+          Your Smart Marketplace
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-          Sell your items with AI-powered descriptions, reach maximum buyers with SEO optimization, 
-          and manage everything with professional tools. Join thousands of sellers making successful sales.
+          Buy and sell anything with intelligent assistance. Smart descriptions, automated suggestions, 
+          and professional tools that make trading effortless. Join thousands making successful transactions.
         </p>
         <Button 
           size="lg"
@@ -49,10 +49,10 @@ export default function Landing() {
               <Star className="h-6 w-6 text-purple-600 dark:text-purple-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              AI-Powered Descriptions
+              Smart Assistance
             </h3>
             <p className="text-gray-600 dark:text-gray-300">
-              Generate compelling product descriptions with AI that highlight your item's best features and attract more buyers.
+              Get intelligent suggestions for descriptions, pricing, and categories that help your items stand out and attract more buyers.
             </p>
           </div>
 

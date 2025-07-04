@@ -86,15 +86,15 @@ export default function RoleSelection() {
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  AI-powered descriptions
+                  Smart listing assistance
                 </li>
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  SEO-optimized listings
+                  Intelligent pricing suggestions
                 </li>
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  Secure messaging
+                  Automated optimization
                 </li>
               </ul>
             </CardContent>
@@ -122,15 +122,15 @@ export default function RoleSelection() {
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  Advanced search & filters
+                  Smart search & recommendations
                 </li>
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  Direct seller messaging
+                  Intelligent price comparisons
                 </li>
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  Secure transactions
+                  Automated deal alerts
                 </li>
               </ul>
             </CardContent>
@@ -158,15 +158,15 @@ export default function RoleSelection() {
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  Full marketplace access
+                  All smart features
                 </li>
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  Unified dashboard
+                  Intelligent insights
                 </li>
                 <li className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-500" />
-                  Complete experience
+                  Complete AI assistance
                 </li>
               </ul>
             </CardContent>

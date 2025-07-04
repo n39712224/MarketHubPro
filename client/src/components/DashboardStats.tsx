@@ -26,9 +26,9 @@ export default function DashboardStats() {
 
   const statItems = [
     {
-      title: "Total Earnings",
+      title: "Smart Earnings",
       value: `$${stats.totalEarnings.toLocaleString()}`,
-      change: "+12% from last month",
+      change: "AI suggests pricing 15% higher",
       changeColor: "text-green-600",
       icon: (
         <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,9 +38,9 @@ export default function DashboardStats() {
       bgColor: "bg-green-100",
     },
     {
-      title: "Active Listings",
+      title: "Smart Listings",
       value: stats.activeListings.toString(),
-      change: "3 new this week",
+      change: "AI optimized for 23% more views",
       changeColor: "text-blue-600",
       icon: (
         <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,9 +50,9 @@ export default function DashboardStats() {
       bgColor: "bg-blue-100",
     },
     {
-      title: "Items Sold",
+      title: "Smart Sales",
       value: stats.itemsSold.toString(),
-      change: "98% positive feedback",
+      change: "AI predicts 3 more sales this week",
       changeColor: "text-purple-600",
       icon: (
         <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,9 +62,9 @@ export default function DashboardStats() {
       bgColor: "bg-purple-100",
     },
     {
-      title: "Page Views",
+      title: "Smart Analytics",
       value: stats.totalViews.toLocaleString(),
-      change: "Last 30 days",
+      change: "AI insights: peak traffic at 7pm",
       changeColor: "text-amber-600",
       icon: (
         <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
