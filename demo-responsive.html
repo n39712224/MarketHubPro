@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketHub - Cross-Platform Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Cross-platform compatibility */
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* Touch-friendly interactive elements */
+        @media (hover: none) and (pointer: coarse) {
+            button, a, [role="button"] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .shadow-lg {
+                box-shadow: 0 0 0 2px currentColor;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <!-- Mobile View (320px - 640px) -->
+    <div class="max-w-sm mx-auto border-2 border-gray-300 rounded-lg p-4 mb-8">
+        <div class="text-center mb-4">
+            <h2 class="text-lg font-bold text-gray-800">📱 Mobile View</h2>
+            <p class="text-sm text-gray-600">320px - 640px</p>
+        </div>
+        
+        <!-- Mobile Header -->
+        <div class="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 rounded-t-lg p-4">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <span class="text-white text-sm">M</span>
+                    </div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                        MarketHub
+                    </h1>
+                </div>
+                <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-2xl flex items-center gap-2 w-full justify-center text-sm">
+                    <span>+</span>
+                    <span>Create Private Sale</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Stats Grid -->
+        <div class="grid grid-cols-1 gap-4 p-4 bg-gray-50 rounded-b-lg">
+            <div class="bg-white rounded-lg p-4 shadow-lg">
+                <div class="text-2xl font-bold text-blue-600">3</div>
+                <div class="text-xs text-gray-500">Active Sales</div>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow-lg">
+                <div class="text-2xl font-bold text-emerald-600">$1,850</div>
+                <div class="text-xs text-gray-500">Total Earnings</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tablet View (640px - 1024px) -->
+    <div class="max-w-2xl mx-auto border-2 border-gray-300 rounded-lg p-4 mb-8">
+        <div class="text-center mb-4">
+            <h2 class="text-lg font-bold text-gray-800">📱 Tablet View</h2>
+            <p class="text-sm text-gray-600">640px - 1024px</p>
+        </div>
+        
+        <!-- Tablet Header -->
+        <div class="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 rounded-t-lg p-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <span class="text-white">M</span>
+                    </div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                        MarketHub
+                    </h1>
+                </div>
+                <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2">
+                    <span>+</span>
+                    <span>Create Private Sale</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tablet Stats Grid -->
+        <div class="grid grid-cols-2 gap-6 p-6 bg-gray-50 rounded-b-lg">
+            <div class="bg-white rounded-lg p-6 shadow-lg">
+                <div class="text-3xl font-bold text-blue-600">3</div>
+                <div class="text-sm text-gray-500">Active Private Sales</div>
+            </div>
+            <div class="bg-white rounded-lg p-6 shadow-lg">
+                <div class="text-3xl font-bold text-emerald-600">$1,850</div>
+                <div class="text-sm text-gray-500">Total Earnings</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop View (1024px+) -->
+    <div class="max-w-4xl mx-auto border-2 border-gray-300 rounded-lg p-4">
+        <div class="text-center mb-4">
+            <h2 class="text-lg font-bold text-gray-800">🖥️ Desktop View</h2>
+            <p class="text-sm text-gray-600">1024px+</p>
+        </div>
+        
+        <!-- Desktop Header -->
+        <div class="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 rounded-t-lg p-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <span class="text-white text-lg">M</span>
+                        </div>
+                        <h1 class="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                            MarketHub
+                        </h1>
+                    </div>
+                    <p class="text-gray-600 text-lg ml-15">
+                        Phase 1: Private sales with email invitations and Facebook connections
+                    </p>
+                </div>
+                <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl flex items-center gap-3 shadow-2xl">
+                    <span class="text-lg">+</span>
+                    <span class="font-semibold">Create Private Sale</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Desktop Stats Grid -->
+        <div class="grid grid-cols-3 gap-8 p-8 bg-gray-50 rounded-b-lg">
+            <div class="bg-gradient-to-br from-white to-blue-50/50 rounded-lg p-6 shadow-xl">
+                <div class="text-4xl font-bold text-blue-600 mb-2">3</div>
+                <div class="text-sm text-gray-600">Active Private Sales</div>
+                <div class="text-xs text-gray-500 mt-1">Currently available</div>
+            </div>
+            <div class="bg-gradient-to-br from-white to-emerald-50/50 rounded-lg p-6 shadow-xl">
+                <div class="text-4xl font-bold text-emerald-600 mb-2">$1,850</div>
+                <div class="text-sm text-gray-600">Total Earnings</div>
+                <div class="text-xs text-gray-500 mt-1">From completed sales</div>
+            </div>
+            <div class="bg-gradient-to-br from-white to-purple-50/50 rounded-lg p-6 shadow-xl">
+                <div class="text-4xl font-bold text-purple-600 mb-2">135</div>
+                <div class="text-sm text-gray-600">Total Views</div>
+                <div class="text-xs text-gray-500 mt-1">Across all listings</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Features Demo -->
+    <div class="max-w-4xl mx-auto mt-8 border-2 border-emerald-300 rounded-lg p-6 bg-gradient-to-r from-emerald-50 to-teal-50">
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-bold text-emerald-800">🤖 AI Image Enhancement Features</h2>
+            <p class="text-sm text-emerald-600">Fully integrated and ready to use</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg p-6 shadow-lg">
+                <h3 class="font-semibold text-emerald-700 mb-3">Image Quality Analysis</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                        <span>Lighting optimization suggestions</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                        <span>Background composition tips</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                        <span>Quality score (1-10 rating)</span>
+                    </div>
+                </div>
+                <button class="mt-4 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm w-full">
+                    Analyze Quality
+                </button>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow-lg">
+                <h3 class="font-semibold text-blue-700 mb-3">AI Description Generation</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        <span>Automatic product recognition</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        <span>Key features identification</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        <span>Sales-optimized descriptions</span>
+                    </div>
+                </div>
+                <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm w-full">
+                    Generate Description
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cross-Platform Features -->
+    <div class="max-w-4xl mx-auto mt-8 border-2 border-purple-300 rounded-lg p-6 bg-gradient-to-r from-purple-50 to-pink-50">
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-bold text-purple-800">🌐 Cross-Platform Compatibility</h2>
+            <p class="text-sm text-purple-600">Works seamlessly on all devices</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-lg p-4 shadow-lg text-center">
+                <div class="text-2xl mb-2">📱</div>
+                <h3 class="font-semibold text-purple-700 mb-2">Mobile Optimized</h3>
+                <ul class="text-xs text-gray-600 space-y-1">
+                    <li>Touch-friendly buttons (44px min)</li>
+                    <li>Swipe gestures support</li>
+                    <li>Optimized font sizes</li>
+                </ul>
+            </div>
+            
+            <div class="bg-white rounded-lg p-4 shadow-lg text-center">
+                <div class="text-2xl mb-2">💻</div>
+                <h3 class="font-semibold text-purple-700 mb-2">Desktop Enhanced</h3>
+                <ul class="text-xs text-gray-600 space-y-1">
+                    <li>Hover effects and animations</li>
+                    <li>Keyboard shortcuts</li>
+                    <li>Multi-column layouts</li>
+                </ul>
+            </div>
+            
+            <div class="bg-white rounded-lg p-4 shadow-lg text-center">
+                <div class="text-2xl mb-2">♿</div>
+                <h3 class="font-semibold text-purple-700 mb-2">Accessibility</h3>
+                <ul class="text-xs text-gray-600 space-y-1">
+                    <li>High contrast mode</li>
+                    <li>Reduced motion support</li>
+                    <li>Screen reader friendly</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
