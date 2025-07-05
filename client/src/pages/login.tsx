@@ -197,7 +197,7 @@ export default function Login() {
 
           <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Demo credentials: alex@markethub.com / demo
+              Test users: alex@markethub.com / demo or alex.tester@markethub.com / test
             </p>
           </div>
 

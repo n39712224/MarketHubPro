@@ -76,6 +76,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.session.user = user;
         
         res.json(user);
+      } else if (email === 'alex.tester@markethub.com' && password === 'test') {
+        const user = {
+          id: 'user1',
+          email: 'alex.tester@markethub.com',
+          firstName: 'Alex',
+          lastName: 'Tester',
+          isAuthenticated: true
+        };
+        
+        // Set user in session
+        req.session.user = user;
+        
+        res.json(user);
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
       }
