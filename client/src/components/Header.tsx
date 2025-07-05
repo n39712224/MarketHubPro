@@ -76,8 +76,15 @@ export default function Header() {
               </span>
             </button>
             
-            {/* User Profile */}
-            {isAuthenticated && (
+            {/* Login/User Profile */}
+            {!isAuthenticated ? (
+              <Button
+                onClick={() => window.location.href = '/api/login'}
+                className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white px-6 py-2 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                Sign In / Sign Up
+              </Button>
+            ) : (
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-3 bg-white/50 dark:bg-gray-800/50 rounded-full pr-4 pl-1 py-1 border border-white/20 dark:border-gray-700/50">
                   <div className="relative">
