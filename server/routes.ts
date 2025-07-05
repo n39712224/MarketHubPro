@@ -136,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new listing
-  app.post("/api/listings", upload.array('images', 5), async (req, res) => {
+  app.post("/api/listings", isAuthenticated, upload.array('images', 5), async (req, res) => {
     try {
       const data = {
         ...req.body,
@@ -272,6 +272,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/ai/generate-from-image", async (req, res) => {
     res.json({ description: "Please write a description for your item." });
+  });
+
+  // Shipping integration routes
+  app.post("/api/shipping/calculate", isAuthenticated, async (req, res) => {
+    try {
+      const { fromAddress, toAddress, weight, dimensions, carrier } = req.body;
+      
+      // Default shipping rates (in production, integrate with actual APIs)
+      const shippingRates = {
+        ups: {
+          ground: 15.00,
+          express: 35.00,
+          overnight: 65.00
+        },
+        fedex: {
+          ground: 16.00,
+          express: 32.00,
+          overnight: 68.00
+        },
+        usps: {
+          ground: 12.00,
+          priority: 25.00,
+          express: 45.00
+        }
+      };
+      
+      const rates = shippingRates[carrier] || shippingRates.ups;
+      
+      res.json({
+        carrier: carrier || 'ups',
+        rates: [
+          { service: 'ground', rate: rates.ground, delivery: '5-7 business days' },
+          { service: 'express', rate: rates.express, delivery: '2-3 business days' },
+          { service: 'overnight', rate: rates.overnight, delivery: '1 business day' }
+        ]
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/shipping/create-label", isAuthenticated, async (req, res) => {
+    try {
+      const { fromAddress, toAddress, weight, dimensions, service, carrier } = req.body;
+      
+      // Mock shipping label creation (in production, integrate with actual APIs)
+      const trackingNumber = `${carrier.toUpperCase()}${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+      
+      res.json({
+        trackingNumber,
+        labelUrl: `https://example.com/labels/${trackingNumber}.pdf`,
+        carrier: carrier || 'ups',
+        service,
+        cost: service === 'ground' ? 15.00 : service === 'express' ? 35.00 : 65.00
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
   });
 
   // Contact preferences routes
