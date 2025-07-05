@@ -47,15 +47,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Simple auth routes (bypassing Replit Auth for now)
   app.get('/api/auth/user', async (req: any, res) => {
     try {
-      // For now, return a mock user to enable authentication
-      const user = {
-        id: 'demo-user-1',
-        email: 'alex@markethub.com',
-        firstName: 'Alex',
-        lastName: 'Johnson',
-        isAuthenticated: true
-      };
-      res.json(user);
+      // Check if user is logged in via session
+      if (req.session && req.session.user) {
+        res.json(req.session.user);
+      } else {
+        res.status(401).json({ error: 'Not authenticated' });
+      }
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -74,6 +71,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastName: 'Johnson',
           isAuthenticated: true
         };
+        
+        // Set user in session
+        req.session.user = user;
+        
         res.json(user);
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
@@ -85,6 +86,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/auth/logout', async (req: any, res) => {
     try {
+      // Clear user session
+      if (req.session) {
+        req.session.user = null;
+      }
       res.json({ success: true });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
