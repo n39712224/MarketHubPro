@@ -41,7 +41,7 @@ export default function Dashboard({ shareLink }: DashboardProps) {
                 </h1>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-lg ml-10 sm:ml-13">
-                Phase 1: Private sales with email invitations and Facebook connections
+                Your personal marketplace for selling items
               </p>
             </div>
             <Button 
