@@ -1,8 +1,8 @@
-# MarketHub - E-commerce Listing Management Platform
+# MarketHub - Private Sales Platform
 
 ## Overview
 
-MarketHub is a private-sales-only platform focused exclusively on email invitations and Facebook connections. This platform allows users to create private sales listings and invite specific people via email, with optional Facebook network integration. The platform features shipping cost functionality, image uploads, and a beautiful modern interface that avoids resembling traditional marketplace designs like eBay. The platform is designed for private sales only - no public marketplace features.
+MarketHub is a simplified private sales platform. Users can create private sale listings with a single "Create Private Sale" button that requires authentication. The platform focuses exclusively on private sales functionality with clean, modern interface design.
 
 ## System Architecture
 

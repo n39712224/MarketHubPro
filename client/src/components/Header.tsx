@@ -32,7 +32,7 @@ export default function Header() {
                 <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   MarketHub
                 </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1">Personal Marketplace</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1">Private Sales</p>
               </div>
             </Link>
             
@@ -76,15 +76,8 @@ export default function Header() {
               </span>
             </button>
             
-            {/* Login/User Profile */}
-            {!isAuthenticated ? (
-              <Button
-                onClick={() => window.location.href = '/api/login'}
-                className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white px-6 py-2 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                Sign In / Sign Up
-              </Button>
-            ) : (
+            {/* User Profile */}
+            {isAuthenticated && (
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-3 bg-white/50 dark:bg-gray-800/50 rounded-full pr-4 pl-1 py-1 border border-white/20 dark:border-gray-700/50">
                   <div className="relative">

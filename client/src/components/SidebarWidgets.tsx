@@ -72,56 +72,26 @@ export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
 
   return (
     <div className="space-y-6">
-      {/* Authentication Widget - shown when not authenticated */}
-      {!isAuthenticated && (
-        <Card className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-200 dark:border-purple-700 shadow-lg">
-          <CardHeader className="pb-3 text-center">
-            <CardTitle className="text-purple-900 dark:text-purple-100 flex items-center justify-center gap-2">
-              <LogIn className="w-5 h-5" />
-              Sign In Required
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-center space-y-3">
-            <p className="text-sm text-purple-700 dark:text-purple-300">
-              Sign in to create listings and access all features
-            </p>
-            <Button 
-              onClick={() => window.location.href = '/api/login'}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white"
-            >
-              <LogIn className="w-4 h-4 mr-2" />
-              Sign In / Sign Up
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Quick Actions Widget */}
+      {/* Private Sales Widget */}
       <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-3">
-          <CardTitle className="text-slate-900 dark:text-white">Quick Actions</CardTitle>
+          <CardTitle className="text-slate-900 dark:text-white">Private Sales</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <Button 
-            onClick={onAddListing}
-            className="w-full"
+            onClick={() => {
+              if (!isAuthenticated) {
+                window.location.href = '/api/login';
+              } else {
+                onAddListing();
+              }
+            }}
+            className="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            Add New Listing
-          </Button>
-          <Button variant="outline" className="w-full">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-            Bulk Edit
-          </Button>
-          <Button variant="outline" className="w-full">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Export Data
+            Create Private Sale
           </Button>
         </CardContent>
       </Card>
