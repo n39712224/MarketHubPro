@@ -8,7 +8,7 @@ import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertListingSchema, paymentIntentSchema } from "@shared/schema";
 import { generateDescription, improveDescription, suggestTitleAndCategory, enhanceImage, generateImageDescription, type AIDescriptionRequest } from "./ai";
-import { sendMultipleInvitations } from "./email";
+import { sendMultipleInvitations, getAllNotifications, getNotificationsForEmail } from "./notifications";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Initialize Stripe
@@ -441,6 +441,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         service,
         cost: service === 'ground' ? 15.00 : service === 'express' ? 35.00 : 65.00
       });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Notifications routes
+  app.get("/api/notifications", async (req, res) => {
+    try {
+      const email = req.query.email as string;
+      const notifications = email ? getNotificationsForEmail(email) : getAllNotifications();
+      res.json(notifications);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
