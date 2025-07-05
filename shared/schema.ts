@@ -43,7 +43,7 @@ export type InsertListing = z.infer<typeof insertListingSchema>;
 // Activity schema
 export const activitySchema = z.object({
   id: z.string(),
-  type: z.enum(['sale', 'view', 'listing_added', 'listing_shared', 'listing_edited']),
+  type: z.enum(['sale', 'view', 'listing_added', 'listing_shared', 'listing_edited', 'email_sent']),
   description: z.string(),
   listingId: z.string().optional(),
   amount: z.number().optional(),

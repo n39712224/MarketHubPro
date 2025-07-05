@@ -8,6 +8,7 @@ import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertListingSchema, paymentIntentSchema } from "@shared/schema";
 import { generateDescription, improveDescription, suggestTitleAndCategory, enhanceImage, generateImageDescription, type AIDescriptionRequest } from "./ai";
+import { sendMultipleInvitations } from "./email";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Initialize Stripe
@@ -248,6 +249,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertListingSchema.parse(data);
       console.log('Validated data:', validatedData);
       const listing = await storage.createListing(validatedData);
+      
+      // Send invitation emails for private listings
+      if (listing.visibility === 'private' && listing.invitedEmails && listing.invitedEmails.length > 0) {
+        try {
+          const user = req.session?.user;
+          const sellerName = user ? `${user.firstName} ${user.lastName}` : 'Someone';
+          const listingUrl = `${req.protocol}://${req.get('host')}/listing/${listing.id}`;
+          
+          const invitations = listing.invitedEmails.map(email => ({
+            to: email,
+            listingTitle: listing.title,
+            listingPrice: listing.price,
+            listingDescription: listing.description,
+            sellerName: sellerName,
+            listingUrl: listingUrl
+          }));
+          
+          const emailResult = await sendMultipleInvitations(invitations);
+          console.log(`Email invitations sent: ${emailResult.sent} successful, ${emailResult.failed} failed`);
+          
+          // Add activity for email sending
+          await storage.createActivity({
+            type: 'email_sent',
+            description: `Invitation emails sent to ${emailResult.sent} recipients for "${listing.title}"`,
+            listingId: listing.id,
+          });
+        } catch (emailError) {
+          console.error('Error sending invitation emails:', emailError);
+          // Don't fail the listing creation if email sending fails
+        }
+      }
       
       res.status(201).json(listing);
     } catch (error: any) {

@@ -23,7 +23,7 @@ export async function sendInvitationEmail(invitation: EmailInvitation): Promise<
   try {
     const msg = {
       to: invitation.to,
-      from: 'noreply@markethub.com', // You can change this to your verified sender
+      from: 'noreply@replit.app', // Using verified Replit domain
       subject: `You're invited to view: ${invitation.listingTitle}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
