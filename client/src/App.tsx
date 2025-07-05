@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import Dashboard from "@/pages/dashboard";
 import Landing from "@/pages/landing";
-import RoleSelection from "@/pages/role-selection";
+import Login from "@/pages/login";
 import Checkout from "@/pages/checkout";
 import { Route, Switch } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -46,22 +46,16 @@ function AppRouter() {
             <>
               <Route path="/" component={Landing} />
               <Route path="/landing" component={Landing} />
+              <Route path="/login" component={Login} />
             </>
           ) : (
             <>
-              {/* Check if user needs role selection */}
-              {user && !user.isSeller && !user.isBuyer ? (
-                <Route path="/" component={RoleSelection} />
-              ) : (
-                <>
-                  <Route path="/"><Dashboard /></Route>
-                  <Route path="/dashboard"><Dashboard /></Route>
-                  <Route path="/checkout/:listingId" component={Checkout} />
-                  <Route path="/share/:shareLink">
-                    {(params) => <Dashboard shareLink={params.shareLink} />}
-                  </Route>
-                </>
-              )}
+              <Route path="/"><Dashboard /></Route>
+              <Route path="/dashboard"><Dashboard /></Route>
+              <Route path="/checkout/:listingId" component={Checkout} />
+              <Route path="/share/:shareLink">
+                {(params) => <Dashboard shareLink={params.shareLink} />}
+              </Route>
             </>
           )}
           <Route>

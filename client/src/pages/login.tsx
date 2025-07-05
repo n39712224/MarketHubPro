@@ -17,16 +17,23 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate authentication - in a real app, this would make an API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-      
-      if (email === "alex@markethub.com" && password === "demo") {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const user = await response.json();
         toast({
           title: "Welcome back!",
           description: "You've successfully logged in to MarketHub.",
         });
-        setLocation("/dashboard");
+        // Trigger a refetch of the user data
+        window.location.reload();
       } else {
         toast({
           title: "Login failed",

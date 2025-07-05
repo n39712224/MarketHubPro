@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Star, Users, Shield, Search, MessageCircle } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Landing() {
+  const [, setLocation] = useLocation();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
       {/* Navigation */}
@@ -12,7 +15,7 @@ export default function Landing() {
             <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">MarketHub</span>
           </div>
           <Button 
-            onClick={() => window.location.href = '/api/login'}
+            onClick={() => setLocation('/login')}
             className="bg-purple-600 hover:bg-purple-700 text-white"
           >
             Sign In / Sign Up
@@ -30,7 +33,7 @@ export default function Landing() {
         </p>
         <Button 
           size="lg"
-          onClick={() => window.location.href = '/api/login'}
+          onClick={() => setLocation('/login')}
           className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-8 py-3"
         >
           Start Selling Today
