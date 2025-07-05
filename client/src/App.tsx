@@ -44,7 +44,7 @@ function AppRouter() {
         <Switch>
           {!isAuthenticated ? (
             <>
-              <Route path="/" component={Landing} />
+              <Route path="/"><Dashboard /></Route>
               <Route path="/landing" component={Landing} />
             </>
           ) : (
