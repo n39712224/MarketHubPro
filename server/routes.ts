@@ -239,11 +239,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         localPickup: req.body.localPickup === 'true',
       };
       
+      console.log('Raw listing data:', data);
       const validatedData = insertListingSchema.parse(data);
+      console.log('Validated data:', validatedData);
       const listing = await storage.createListing(validatedData);
       
       res.status(201).json(listing);
     } catch (error: any) {
+      console.error('Listing creation error:', error);
       res.status(400).json({ error: error.message });
     }
   });
