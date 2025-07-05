@@ -74,9 +74,12 @@ Respond in JSON format with the following structure:
       suggestedCategory: result.suggestedCategory !== request.category ? result.suggestedCategory : undefined,
       suggestedKeywords: result.suggestedKeywords || [],
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('AI description generation failed:', error);
-    throw new Error("Failed to generate AI description. Please try again.");
+    if (error.code === 'insufficient_quota' || error.message?.includes('quota')) {
+      error.isQuotaError = true;
+    }
+    throw error;
   }
 }
 
@@ -110,9 +113,12 @@ Make the description more compelling while keeping it honest and accurate. Focus
     });
 
     return response.choices[0].message.content!.trim();
-  } catch (error) {
+  } catch (error: any) {
     console.error('AI description improvement failed:', error);
-    throw new Error("Failed to improve description. Please try again.");
+    if (error.code === 'insufficient_quota' || error.message?.includes('quota')) {
+      error.isQuotaError = true;
+    }
+    throw error;
   }
 }
 

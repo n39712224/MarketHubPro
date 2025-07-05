@@ -457,7 +457,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(result);
     } catch (error: any) {
       console.error('AI description generation error:', error);
-      res.status(500).json({ error: error.message });
+      const isQuotaError = error.code === 'insufficient_quota' || error.type === 'insufficient_quota' || error.message?.includes('quota') || error.message?.includes('exceeded your current quota');
+      res.status(500).json({ 
+        error: isQuotaError ? "OpenAI credits needed. Please add credits to your account." : (error.message || "Failed to generate description")
+      });
     }
   });
 
@@ -468,7 +471,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ description: result });
     } catch (error: any) {
       console.error('AI description improvement error:', error);
-      res.status(500).json({ error: error.message });
+      const isQuotaError = error.code === 'insufficient_quota' || error.message?.includes('quota');
+      res.status(500).json({ 
+        error: isQuotaError ? "OpenAI credits needed. Please add credits to your account." : error.message || "Failed to improve description"
+      });
     }
   });
 
@@ -479,7 +485,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ suggestions: JSON.parse(result) });
     } catch (error: any) {
       console.error('AI image enhancement error:', error);
-      res.status(500).json({ error: error.message });
+      const isQuotaError = error.code === 'insufficient_quota' || error.message?.includes('quota');
+      res.status(500).json({ 
+        error: isQuotaError ? "OpenAI credits needed. Please add credits to your account." : error.message || "Failed to analyze image"
+      });
     }
   });
 
@@ -490,7 +499,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ description: result });
     } catch (error: any) {
       console.error('AI image description error:', error);
-      res.status(500).json({ error: error.message });
+      const isQuotaError = error.code === 'insufficient_quota' || error.message?.includes('quota');
+      res.status(500).json({ 
+        error: isQuotaError ? "OpenAI credits needed. Please add credits to your account." : error.message || "Failed to generate description from image"
+      });
     }
   });
 
