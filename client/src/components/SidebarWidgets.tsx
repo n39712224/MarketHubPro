@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import type { Activity } from "@shared/schema";
-import { Sparkles, TrendingUp, Lightbulb, Target } from "lucide-react";
+import { Sparkles, TrendingUp, Lightbulb, Target, LogIn } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SidebarWidgetsProps {
   onAddListing: () => void;
 }
 
 export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
+  const { isAuthenticated } = useAuth();
+  
   const { data: activities, isLoading: activitiesLoading } = useQuery({
     queryKey: ['/api/activities'],
     queryFn: () => fetch('/api/activities?limit=5').then(res => res.json()),
@@ -69,6 +72,30 @@ export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
 
   return (
     <div className="space-y-6">
+      {/* Authentication Widget - shown when not authenticated */}
+      {!isAuthenticated && (
+        <Card className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-200 dark:border-purple-700 shadow-lg">
+          <CardHeader className="pb-3 text-center">
+            <CardTitle className="text-purple-900 dark:text-purple-100 flex items-center justify-center gap-2">
+              <LogIn className="w-5 h-5" />
+              Sign In Required
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-3">
+            <p className="text-sm text-purple-700 dark:text-purple-300">
+              Sign in to create listings and access all features
+            </p>
+            <Button 
+              onClick={() => window.location.href = '/api/login'}
+              className="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white"
+            >
+              <LogIn className="w-4 h-4 mr-2" />
+              Sign In / Sign Up
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Quick Actions Widget */}
       <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-3">
