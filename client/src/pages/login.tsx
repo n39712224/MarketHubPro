@@ -11,33 +11,44 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
   const { toast } = useToast();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const endpoint = isSignUp ? '/api/auth/signup' : '/api/auth/login';
+      const body = isSignUp 
+        ? { email, password, firstName, lastName }
+        : { email, password };
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(body),
       });
 
       if (response.ok) {
         const user = await response.json();
         toast({
-          title: "Welcome back!",
-          description: "You've successfully logged in to MarketHub.",
+          title: isSignUp ? "Account created!" : "Welcome back!",
+          description: isSignUp 
+            ? "Your account has been created successfully." 
+            : "You've successfully logged in to MarketHub.",
         });
         // Trigger a refetch of the user data
         window.location.reload();
       } else {
+        const error = await response.json();
         toast({
-          title: "Login failed",
-          description: "Invalid email or password. Try alex@markethub.com / demo",
+          title: isSignUp ? "Sign up failed" : "Login failed",
+          description: error.error || "Please try again.",
           variant: "destructive",
         });
       }
@@ -78,16 +89,45 @@ export default function Login() {
           </div>
           <div className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Welcome to MarketHub
+              {isSignUp ? "Join MarketHub" : "Welcome to MarketHub"}
             </CardTitle>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Sign in to your personal marketplace
+              {isSignUp ? "Create your account to start selling" : "Sign in to your personal marketplace"}
             </p>
           </div>
         </CardHeader>
         
         <CardContent className="space-y-6">
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {isSignUp && (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    placeholder="Enter your first name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                    className="h-11"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    type="text"
+                    placeholder="Enter your last name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                    className="h-11"
+                  />
+                </div>
+              </div>
+            )}
+            
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -122,10 +162,10 @@ export default function Login() {
               {isLoading ? (
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Signing in...</span>
+                  <span>{isSignUp ? "Creating account..." : "Signing in..."}</span>
                 </div>
               ) : (
-                "Sign In"
+                isSignUp ? "Create Account" : "Sign In"
               )}
             </Button>
           </form>
@@ -163,13 +203,14 @@ export default function Login() {
 
           <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don't have an account?{" "}
-              <a
-                href="#"
+              {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+              <button
+                type="button"
+                onClick={() => setIsSignUp(!isSignUp)}
                 className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors"
               >
-                Sign up
-              </a>
+                {isSignUp ? "Sign In" : "Sign Up"}
+              </button>
             </p>
           </div>
         </CardContent>

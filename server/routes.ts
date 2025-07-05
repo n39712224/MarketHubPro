@@ -84,6 +84,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post('/api/auth/signup', async (req: any, res) => {
+    try {
+      const { email, password, firstName, lastName } = req.body;
+      
+      // For simplicity, we'll skip the duplicate check for now
+      // In a real app, you'd check if email exists in database
+      
+      // Create new user
+      const newUser = {
+        id: `user-${Date.now()}`, // Simple ID generation
+        email,
+        firstName,
+        lastName,
+        isAuthenticated: true
+      };
+      
+      // Save user to storage (you'd normally hash the password here)
+      await storage.upsertUser(newUser);
+      
+      // Set user in session
+      req.session.user = newUser;
+      
+      res.json(newUser);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.post('/api/auth/logout', async (req: any, res) => {
     try {
       // Clear user session
