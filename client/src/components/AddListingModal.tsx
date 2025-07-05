@@ -141,8 +141,54 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
   };
 
   const enhanceImageQuality = async (imageFile: File) => {
-    // AI features disabled - no OpenAI integration needed
-    return;
+    if (!imageFile) return;
+
+    setIsEnhancingImage(true);
+    setImageEnhancementSuggestions([]);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target?.result as string;
+        const base64Data = base64.split(',')[1];
+
+        try {
+          const response = await apiRequest("POST", "/api/ai/enhance-image", {
+            image: base64Data,
+          });
+          const result = await response.json();
+          
+          if (result.suggestions && result.suggestions.suggestions) {
+            setImageEnhancementSuggestions(result.suggestions.suggestions);
+            toast({
+              title: "Image Analysis Complete",
+              description: "AI has analyzed your image and provided improvement suggestions.",
+            });
+          }
+        } catch (error: any) {
+          const errorMessage = error.message || "Unable to analyze image. Please try again.";
+          const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("insufficient_quota");
+          
+          toast({
+            title: isQuotaError ? "OpenAI Credits Needed" : "Image analysis failed",
+            description: isQuotaError ? "Please add OpenAI credits to your account to use AI features." : errorMessage,
+            variant: "destructive",
+          });
+        }
+      };
+      reader.readAsDataURL(imageFile);
+    } catch (error: any) {
+      const errorMessage = error.message || "Unable to analyze image. Please try again.";
+      const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("insufficient_quota");
+      
+      toast({
+        title: isQuotaError ? "OpenAI Credits Needed" : "Image analysis failed",
+        description: isQuotaError ? "Please add OpenAI credits to your account to use AI features." : errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsEnhancingImage(false);
+    }
   };
 
   const generateDescriptionFromImage = async (imageFile: File) => {
@@ -157,9 +203,10 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
         const base64Data = base64.split(',')[1];
 
         try {
-          const data = await apiRequest("POST", "/api/ai/generate-from-image", {
+          const response = await apiRequest("POST", "/api/ai/generate-from-image", {
             image: base64Data,
           });
+          const data = await response.json();
 
           if (data.description) {
             form.setValue("description", data.description);

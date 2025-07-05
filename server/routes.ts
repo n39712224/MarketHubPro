@@ -333,26 +333,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI assistance routes - DISABLED
-  app.post("/api/ai/generate-description", async (req, res) => {
-    res.json({ description: "AI features disabled. Please write your own description." });
-  });
 
-  app.post("/api/ai/improve-description", async (req, res) => {
-    res.json({ description: req.body.description });
-  });
-
-  app.post("/api/ai/suggest-title-category", async (req, res) => {
-    res.json({ title: req.body.currentTitle || "My Item", category: "Electronics" });
-  });
-
-  app.post("/api/ai/enhance-image", async (req, res) => {
-    res.json({ enhancement: { suggestions: [], quality_score: 8 } });
-  });
-
-  app.post("/api/ai/generate-from-image", async (req, res) => {
-    res.json({ description: "Please write a description for your item." });
-  });
 
   // Shipping integration routes
   app.post("/api/shipping/calculate", isAuthenticated, async (req, res) => {
@@ -464,6 +445,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newMessage = await storage.sendMessage(message);
       res.json(newMessage);
     } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // AI endpoints
+  app.post("/api/ai/generate-description", async (req, res) => {
+    try {
+      const request: AIDescriptionRequest = req.body;
+      const result = await generateDescription(request);
+      res.json(result);
+    } catch (error: any) {
+      console.error('AI description generation error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/ai/improve-description", async (req, res) => {
+    try {
+      const { description, context } = req.body;
+      const result = await improveDescription(description, context);
+      res.json({ description: result });
+    } catch (error: any) {
+      console.error('AI description improvement error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/ai/enhance-image", async (req, res) => {
+    try {
+      const { image } = req.body;
+      const result = await enhanceImage(image);
+      res.json({ suggestions: JSON.parse(result) });
+    } catch (error: any) {
+      console.error('AI image enhancement error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/ai/generate-from-image", async (req, res) => {
+    try {
+      const { image } = req.body;
+      const result = await generateImageDescription(image);
+      res.json({ description: result });
+    } catch (error: any) {
+      console.error('AI image description error:', error);
       res.status(500).json({ error: error.message });
     }
   });
