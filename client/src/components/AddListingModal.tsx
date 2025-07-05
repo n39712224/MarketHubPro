@@ -260,10 +260,12 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
       const response = await fetch('/api/listings', {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create listing');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || errorData.message || 'Failed to create listing');
       }
 
       return response.json();

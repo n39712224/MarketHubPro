@@ -38,7 +38,7 @@ export function getSession() {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       maxAge: sessionTtl,
     },
   });
@@ -128,11 +128,18 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  const user = req.user as any;
-
-  if (!req.isAuthenticated() || !user.expires_at) {
-    return res.status(401).json({ message: "Unauthorized" });
+  // Check session-based authentication first (for our demo system)
+  if (req.session && req.session.user && req.session.user.isAuthenticated) {
+    return next();
   }
+
+  // Fall back to Passport.js authentication if available
+  const user = req.user as any;
+  if (req.isAuthenticated && req.isAuthenticated() && user && user.expires_at) {
+    return next();
+  }
+
+  return res.status(401).json({ message: "Unauthorized" });
 
   const now = Math.floor(Date.now() / 1000);
   if (now <= user.expires_at) {
