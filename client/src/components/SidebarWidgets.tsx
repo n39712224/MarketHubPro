@@ -79,13 +79,7 @@ export default function SidebarWidgets({ onAddListing }: SidebarWidgetsProps) {
         </CardHeader>
         <CardContent className="space-y-3">
           <Button 
-            onClick={() => {
-              if (!isAuthenticated) {
-                window.location.href = '/api/login';
-              } else {
-                onAddListing();
-              }
-            }}
+            onClick={onAddListing}
             className="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

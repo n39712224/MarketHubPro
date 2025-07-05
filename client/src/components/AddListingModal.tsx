@@ -136,53 +136,8 @@ export default function AddListingModal({ isOpen, onClose }: AddListingModalProp
   };
 
   const enhanceImageQuality = async (imageFile: File) => {
-    if (!imageFile) return;
-
-    setIsEnhancingImage(true);
-    setImageEnhancementSuggestions([]);
-
-    try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const base64 = e.target?.result as string;
-        const base64Data = base64.split(',')[1];
-
-        try {
-          const data = await apiRequest("POST", "/api/ai/enhance-image", {
-            image: base64Data,
-          });
-
-          if (data?.enhancement?.suggestions) {
-            setImageEnhancementSuggestions(data.enhancement.suggestions);
-            toast({
-              title: "Image Analysis Complete",
-              description: `Quality score: ${data.enhancement.quality_score}/10`,
-            });
-          }
-        } catch (error: any) {
-          const errorMessage = error.message || "Unable to analyze image quality. Please try again.";
-          const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("insufficient_quota");
-          
-          toast({
-            title: isQuotaError ? "OpenAI Credits Needed" : "Image analysis failed",
-            description: isQuotaError ? "Please add OpenAI credits to your account to use AI features." : errorMessage,
-            variant: "destructive",
-          });
-        }
-      };
-      reader.readAsDataURL(imageFile);
-    } catch (error: any) {
-      const errorMessage = error.message || "Unable to analyze image quality. Please try again.";
-      const isQuotaError = errorMessage.includes("quota") || errorMessage.includes("insufficient_quota");
-      
-      toast({
-        title: isQuotaError ? "OpenAI Credits Needed" : "Image analysis failed",
-        description: isQuotaError ? "Please add OpenAI credits to your account to use AI features." : errorMessage,
-        variant: "destructive",
-      });
-    } finally {
-      setIsEnhancingImage(false);
-    }
+    // AI features disabled - no OpenAI integration needed
+    return;
   };
 
   const generateDescriptionFromImage = async (imageFile: File) => {
