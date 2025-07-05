@@ -253,63 +253,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI assistance routes
+  // AI assistance routes - DISABLED
   app.post("/api/ai/generate-description", async (req, res) => {
-    try {
-      const aiRequest: AIDescriptionRequest = req.body;
-      const result = await generateDescription(aiRequest);
-      res.json(result);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
+    res.json({ description: "AI features disabled. Please write your own description." });
   });
 
   app.post("/api/ai/improve-description", async (req, res) => {
-    try {
-      const { description, context } = req.body;
-      const improvedDescription = await improveDescription(description, context);
-      res.json({ description: improvedDescription });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
+    res.json({ description: req.body.description });
   });
 
   app.post("/api/ai/suggest-title-category", async (req, res) => {
-    try {
-      const { description, currentTitle } = req.body;
-      const suggestions = await suggestTitleAndCategory(description, currentTitle);
-      res.json(suggestions);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
+    res.json({ title: req.body.currentTitle || "My Item", category: "Electronics" });
   });
 
   app.post("/api/ai/enhance-image", async (req, res) => {
-    try {
-      const { image } = req.body;
-      const enhancement = await enhanceImage(image);
-      res.json({ enhancement: JSON.parse(enhancement) });
-    } catch (error: any) {
-      const isQuotaError = error.code === 'insufficient_quota' || error.message?.includes('quota') || error.isQuotaError;
-      res.status(500).json({ 
-        error: isQuotaError ? "OpenAI credits needed. Please add credits to your OpenAI account." : error.message,
-        errorType: isQuotaError ? 'quota_exceeded' : 'general_error'
-      });
-    }
+    res.json({ enhancement: { suggestions: [], quality_score: 8 } });
   });
 
   app.post("/api/ai/generate-from-image", async (req, res) => {
-    try {
-      const { image } = req.body;
-      const description = await generateImageDescription(image);
-      res.json({ description });
-    } catch (error: any) {
-      const isQuotaError = error.code === 'insufficient_quota' || error.message?.includes('quota') || error.isQuotaError;
-      res.status(500).json({ 
-        error: isQuotaError ? "OpenAI credits needed. Please add credits to your OpenAI account." : error.message,
-        errorType: isQuotaError ? 'quota_exceeded' : 'general_error'
-      });
-    }
+    res.json({ description: "Please write a description for your item." });
   });
 
   // Contact preferences routes
