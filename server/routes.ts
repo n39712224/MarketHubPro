@@ -136,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new listing
-  app.post("/api/listings", upload.array('images', 5), async (req, res) => {
+  app.post("/api/listings", isAuthenticated, upload.array('images', 5), async (req, res) => {
     try {
       const data = {
         ...req.body,
@@ -156,7 +156,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update listing
-  app.put("/api/listings/:id", upload.array('images', 5), async (req, res) => {
+  app.put("/api/listings/:id", isAuthenticated, upload.array('images', 5), async (req, res) => {
     try {
       const data = {
         ...req.body,
@@ -183,7 +183,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete listing
-  app.delete("/api/listings/:id", async (req, res) => {
+  app.delete("/api/listings/:id", isAuthenticated, async (req, res) => {
     try {
       const success = await storage.deleteListing(req.params.id);
       if (!success) {
@@ -197,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Generate share link
-  app.post("/api/listings/:id/share", async (req, res) => {
+  app.post("/api/listings/:id/share", isAuthenticated, async (req, res) => {
     try {
       const shareLink = await storage.generateShareLink(req.params.id);
       res.json({ shareLink: `${req.protocol}://${req.get('host')}/share/${shareLink}` });
@@ -233,7 +233,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user stats
-  app.get("/api/stats", async (req, res) => {
+  app.get("/api/stats", isAuthenticated, async (req, res) => {
     try {
       const stats = await storage.getUserStats();
       res.json(stats);
@@ -243,7 +243,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get activities
-  app.get("/api/activities", async (req, res) => {
+  app.get("/api/activities", isAuthenticated, async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
       const activities = await storage.getActivities(limit);

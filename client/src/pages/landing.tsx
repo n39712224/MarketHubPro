@@ -23,11 +23,10 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <h1 className="text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-          Your Smart Marketplace
+          Private Sales Platform
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-          Buy and sell anything with intelligent assistance. Smart descriptions, automated suggestions, 
-          and professional tools that make trading effortless. Join thousands making successful transactions.
+          Sell items privately to friends, family, and specific contacts. Create private listings with email invitations and Facebook connections. No public marketplace - just secure, private sales.
         </p>
         <Button 
           size="lg"
