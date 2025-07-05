@@ -192,7 +192,7 @@ export const listings = pgTable("listings", {
   shippingOffered: boolean("shipping_offered").notNull().default(false),
   localPickup: boolean("local_pickup").notNull().default(false),
   shareLink: varchar("share_link", { length: 50 }),
-  invitedEmails: jsonb("invited_emails").$type<string[]>().default([]),
+  invitedEmails: jsonb("invited_emails").$type<string[]>().notNull().default([]),
   allowFacebookConnections: boolean("allow_facebook_connections").notNull().default(false),
   deliveryMethod: varchar("delivery_method", { length: 20 }).notNull().default("pickup"),
   deliveryStatus: varchar("delivery_status", { length: 20 }).notNull().default("pending"),
