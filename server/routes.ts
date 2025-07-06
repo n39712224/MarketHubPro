@@ -9,7 +9,7 @@ import { storage } from "./storage";
 import { insertListingSchema, paymentIntentSchema } from "@shared/schema";
 import { generateDescription, improveDescription, suggestTitleAndCategory, enhanceImage, generateImageDescription, type AIDescriptionRequest } from "./ai";
 import { sendMultipleInvitations, getAllNotifications, getNotificationsForEmail } from "./notifications";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./simpleAuth";
 
 // Initialize Stripe
 const stripe = process.env.STRIPE_SECRET_KEY ? 
@@ -31,7 +31,7 @@ const upload = multer({
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
-  await setupAuth(app);
+  setupAuth(app);
 
   // Ensure uploads directory exists
   if (!fs.existsSync('uploads')) {
@@ -64,7 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { email, password } = req.body;
       
       // Simple demo authentication
-      if (email === 'alex@markethub.com' && password === 'demo') {
+      if (email === 'alex@markethub.com' && password === 'password') {
         const user = {
           id: 'demo-user-1',
           email: 'alex@markethub.com',
