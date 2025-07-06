@@ -240,7 +240,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         shippingOffered: req.body.shippingOffered === 'true',
         localPickup: req.body.localPickup === 'true',
         allowFacebookConnections: req.body.allowFacebookConnections === 'true',
-        invitedEmails: req.body.invitedEmails ? req.body.invitedEmails.split(',').map((email: string) => email.trim()).filter(Boolean) : [],
+        invitedEmails: Array.isArray(req.body.invitedEmails) 
+          ? req.body.invitedEmails.filter(Boolean)
+          : (req.body.invitedEmails ? req.body.invitedEmails.split(',').map((email: string) => email.trim()).filter(Boolean) : []),
         trackingNumber: req.body.trackingNumber || undefined,
         deliveryAddress: req.body.deliveryAddress || undefined,
         deliveryNotes: req.body.deliveryNotes || undefined,

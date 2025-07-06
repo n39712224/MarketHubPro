@@ -15,16 +15,15 @@ export interface EmailInvitation {
 }
 
 export async function sendInvitationEmail(invitation: EmailInvitation): Promise<boolean> {
-  // Check if SendGrid is properly configured
-  if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_API_KEY.startsWith('SG.')) {
-    console.log('📧 Email would be sent to:', invitation.to);
+  if (!process.env.SENDGRID_API_KEY) {
+    console.log('📧 No API key - logging email instead');
+    console.log('To:', invitation.to);
     console.log('Subject:', `You're invited to view: ${invitation.listingTitle}`);
-    console.log('Listing URL:', invitation.listingUrl);
-    console.log('⚠️  To send real emails, add a proper SendGrid API key (starts with SG.)');
-    
-    // For now, return true so the flow continues
+    console.log('URL:', invitation.listingUrl);
     return true;
   }
+
+  console.log('🔄 Attempting to send email via SendGrid...');
 
   try {
     const msg = {
