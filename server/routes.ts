@@ -8,7 +8,8 @@ import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertListingSchema, paymentIntentSchema } from "@shared/schema";
 import { generateDescription, improveDescription, suggestTitleAndCategory, enhanceImage, generateImageDescription, type AIDescriptionRequest } from "./ai";
-import { sendMultipleInvitations, getAllNotifications, getNotificationsForEmail } from "./notifications";
+import { sendMultipleInvitations } from "./email";
+import { getAllNotifications, getNotificationsForEmail } from "./notifications";
 import { setupAuth, isAuthenticated } from "./simpleAuth";
 
 // Initialize Stripe
@@ -446,12 +447,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Notifications routes
+  // Notifications and email preview routes
   app.get("/api/notifications", async (req, res) => {
     try {
       const email = req.query.email as string;
       const notifications = email ? getNotificationsForEmail(email) : getAllNotifications();
       res.json(notifications);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get email invitations for debugging
+  app.get("/api/email-status", async (req, res) => {
+    try {
+      const hasSendGrid = process.env.SENDGRID_API_KEY?.startsWith('SG.');
+      res.json({
+        emailConfigured: hasSendGrid,
+        message: hasSendGrid 
+          ? "SendGrid is configured and emails will be sent"
+          : "SendGrid not configured - emails are logged to console only",
+        setupInstructions: hasSendGrid ? null : "Get a SendGrid API key that starts with 'SG.' from sendgrid.com"
+      });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
