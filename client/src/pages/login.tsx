@@ -42,8 +42,8 @@ export default function Login() {
             ? "Your account has been created successfully." 
             : "You've successfully logged in to MarketHub.",
         });
-        // Trigger a refetch of the user data
-        window.location.reload();
+        // Navigate to dashboard after successful login
+        setLocation("/");
       } else {
         const error = await response.json();
         toast({
