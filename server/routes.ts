@@ -8,7 +8,7 @@ import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertListingSchema, paymentIntentSchema } from "@shared/schema";
 import { generateDescription, improveDescription, suggestTitleAndCategory, enhanceImage, generateImageDescription, type AIDescriptionRequest } from "./ai";
-import { sendMultipleInvitations } from "./simpleEmail";
+import { sendMultipleInvitations } from "./email";
 import { getAllNotifications, getNotificationsForEmail } from "./notifications";
 import { setupAuth, isAuthenticated } from "./simpleAuth";
 
