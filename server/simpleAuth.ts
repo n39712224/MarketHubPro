@@ -36,14 +36,19 @@ export function setupAuth(app: Express) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
       
-      // Create or update user in storage
-      const storedUser = await storage.upsertUser({
-        id: `user-${Date.now()}`,
-        email: user.email,
-        firstName: user.name.split(' ')[0],
-        lastName: user.name.split(' ')[1] || '',
-        profileImageUrl: null,
-      });
+      // Get existing user or create new one
+      let storedUser = await storage.getUser("user1"); // Try the existing user first
+      
+      if (!storedUser) {
+        // Create new user if doesn't exist
+        storedUser = await storage.upsertUser({
+          id: `user-${Date.now()}`,
+          email: user.email,
+          firstName: user.name.split(' ')[0],
+          lastName: user.name.split(' ')[1] || '',
+          profileImageUrl: null,
+        });
+      }
       
       // Store user in session
       (req.session as any).user = storedUser;
