@@ -149,6 +149,9 @@ export const users = pgTable("users", {
   lastName: varchar("last_name", { length: 100 }),
   profileImageUrl: varchar("profile_image_url", { length: 500 }),
   phone: varchar("phone", { length: 20 }),
+  // Role-based access control
+  role: varchar("role", { enum: ["admin", "customer"] }).default("customer").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
   // User role preferences - users can be both buyers and sellers
   isSeller: boolean("is_seller").notNull().default(true),
   isBuyer: boolean("is_buyer").notNull().default(true),

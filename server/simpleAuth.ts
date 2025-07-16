@@ -2,11 +2,13 @@ import type { Express, RequestHandler } from "express";
 import session from "express-session";
 import { storage } from "./storage";
 
-// User accounts for authentication
-const demoUsers = [
-  { email: "alex@markethub.com", password: "password", name: "Alex Johnson" },
-  { email: "demo@example.com", password: "demo", name: "Demo User" }
-];
+// Admin account for platform management
+const adminUser = {
+  email: "admin@markethub.com", 
+  password: "admin2025", 
+  name: "Admin",
+  role: "admin"
+};
 
 export function getSession() {
   return session({
@@ -29,25 +31,25 @@ export function setupAuth(app: Express) {
     try {
       const { email, password } = req.body;
       
-      // Find user in demo users
-      const user = demoUsers.find(u => u.email === email && u.password === password);
+      // Check admin credentials
+      const user = (email === adminUser.email && password === adminUser.password) ? adminUser : null;
       
       if (!user) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
       
-      // Use the existing user directly for alex@markethub.com
-      let storedUser;
-      if (user.email === "alex@markethub.com") {
-        storedUser = await storage.getUser("user1");
-      } else {
-        // For other users, create new
+      // Use admin account for platform management
+      let storedUser = await storage.getUser("admin1");
+      
+      if (!storedUser) {
+        // Create admin user if doesn't exist
         storedUser = await storage.upsertUser({
-          id: `user-${Date.now()}`,
+          id: "admin1",
           email: user.email,
-          firstName: user.name.split(' ')[0],
-          lastName: user.name.split(' ')[1] || '',
+          firstName: user.name,
+          lastName: "",
           profileImageUrl: null,
+          role: "admin",
         });
       }
       
