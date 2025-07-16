@@ -36,11 +36,12 @@ export function setupAuth(app: Express) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
       
-      // Get existing user or create new one
-      let storedUser = await storage.getUser("user1"); // Try the existing user first
-      
-      if (!storedUser) {
-        // Create new user if doesn't exist
+      // Use the existing user directly for alex@markethub.com
+      let storedUser;
+      if (user.email === "alex@markethub.com") {
+        storedUser = await storage.getUser("user1");
+      } else {
+        // For other users, create new
         storedUser = await storage.upsertUser({
           id: `user-${Date.now()}`,
           email: user.email,
