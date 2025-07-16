@@ -2,7 +2,7 @@ import type { Express, RequestHandler } from "express";
 import session from "express-session";
 import { storage } from "./storage";
 
-// Simple demo users for testing
+// User accounts for authentication
 const demoUsers = [
   { email: "alex@markethub.com", password: "password", name: "Alex Johnson" },
   { email: "demo@example.com", password: "demo", name: "Demo User" }

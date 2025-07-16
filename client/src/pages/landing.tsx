@@ -18,7 +18,7 @@ export default function Landing() {
             onClick={() => setLocation('/login')}
             className="bg-purple-600 hover:bg-purple-700 text-white"
           >
-            Sign In / Sign Up
+            Get Started
           </Button>
         </div>
       </nav>
