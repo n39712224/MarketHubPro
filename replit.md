@@ -116,11 +116,13 @@ MarketHub is a simplified private sales platform. Users can create private sale 
 
 ### July 16, 2025 - Phase 1: Admin/Customer Platform with Internal Sales
 - **Role-Based Authentication**: Implemented admin login for item management and customer registration for purchases
-- **Admin Dashboard**: Admin access for listing and managing items for sale
+- **Admin Dashboard**: Admin access for listing and managing items for sale (admin@markethub.com / admin2025)
 - **Customer Registration**: Customers can create accounts to browse and purchase items
 - **Internal Sales Focus**: Platform configured for internal sales testing with persistent data
 - **Production-Ready Interface**: Removed all test user references and demo language
 - **Migration Guide**: Created comprehensive low-cost hosting guide (Vercel, Railway, Render)
+- **Database Schema Updated**: Added role and is_active columns for user management
+- **Login System Verified**: Admin authentication working correctly
 
 ### July 13, 2025 - Production-Ready with Real Email & Database Persistence
 - **Real Email Sending**: Switched from mock to actual SendGrid email delivery system
