@@ -1,10 +1,9 @@
 {
   "version": 2,
-  "public": "client",
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.htm"
+      "src": "/(.*)",
+      "dest": "/client/index.html"
     }
   ]
 }
