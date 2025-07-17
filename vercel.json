@@ -18,10 +18,3 @@
       "src": "/(.*)",
       "dest": "/dist/public/$1"
     }
-  ],
-  "functions": {
-    "server/index.ts": {
-      "runtime": "@vercel/node@latest"
-    }
-  }
-}
