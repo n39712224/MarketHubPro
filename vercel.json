@@ -2,14 +2,10 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/index.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "client/**/*",
-      "use": "@vercel/static-build",
+      "src": "package.json",
+      "use": "@vercel/node",
       "config": {
-        "distDir": "dist/public"
+        "includeFiles": ["server/**", "shared/**", "dist/**"]
       }
     }
   ],
@@ -20,10 +16,12 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/client/dist/$1"
+      "dest": "/dist/public/$1"
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
+  "functions": {
+    "server/index.ts": {
+      "runtime": "@vercel/node@latest"
+    }
   }
 }
